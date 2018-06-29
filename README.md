@@ -9,9 +9,9 @@ Web Frameworks:
 - Express.js
 - Node.js
 
-### Long-term Goals $ Takeaways
+### Long-term Goals & Takeaways
 
-
+TODO: Fill
 
 ### Team
 
