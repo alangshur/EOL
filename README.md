@@ -1,2 +1,18 @@
 # EOL
-A hip Yelp to help you discover all the hidden gems in your area
+
+### Implementation & Technologies
+
+
+Web Frameworks:
+- React.js
+- Backbone.js
+- jQuery
+- Express.js
+- Node.js
+
+
+### Long-term Goals $ Takeaways
+
+
+
+### Team
