@@ -1,0 +1,30 @@
+{
+  "name": "eol",
+  "version": "1.0.0",
+  "description": "Encyclopedia of Life",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alangshur/EOL.git"
+  },
+  "author": "Alexander Langshur and Ryan Kearns",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/alangshur/EOL/issues"
+  },
+  "homepage": "https://github.com/alangshur/EOL#readme",
+  "dependencies": {
+    "backbone": "^1.3.3",
+    "express": "^4.16.3",
+    "jquery": "^3.3.1",
+    "mongodb": "^3.1.0",
+    "react": "^16.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  }
+}
