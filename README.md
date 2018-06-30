@@ -1,2 +1,26 @@
 # EOL
-A hip Yelp to help you discover all the hidden gems in your area
+
+### Implementation & Technologies
+
+Web Frameworks:
+- React.js
+- Backbone.js
+- jQuery
+- Express.js
+- Node.js
+
+Development Tools:
+- Visual Studio IDE
+
+### Long-term Goals & Takeaways
+
+TODO: Fill
+
+Short-term goals and progress metrics to be found in issues tab on Github
+
+### Team
+
+Developers:
+- Alex Langshur
+- Ryan Kearns
+
