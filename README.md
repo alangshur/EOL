@@ -9,6 +9,9 @@ Web Frameworks:
 - Express.js
 - Node.js
 
+Development Tools:
+- Visual Studio IDE
+
 ### Long-term Goals & Takeaways
 
 TODO: Fill
