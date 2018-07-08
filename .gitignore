@@ -1,0 +1,2 @@
+# ignore process.env file
+*.env
