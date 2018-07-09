@@ -1,5 +1,5 @@
 // define middleware exports to main
-module.exports = function(app) {
+module.exports.middleware = function(app) {
 
     // GET for test: #/test
     app.get('/test', (req, res) => {

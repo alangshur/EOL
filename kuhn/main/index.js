@@ -20,7 +20,7 @@ app.listen(PORT, () => {
     console.log(`EOL running on port ${ PORT }`);
 });
 
-// import GET from all features
+// import middleware from all features
 require('../routes/index.js')(app)
 
 // GET for default: #/
