@@ -4,13 +4,15 @@ var path = require('path');
 var express = require('express');
 var format = require('string-format');
 var envConfig = require('dotenv').config();
-var MongoClient = require('mongodb').MongoClient;
 
 // enable method mode for format module
 format.extend(String.prototype, {});
 
 // init express app
 app = express();
+
+// import mongo database configuration
+var db = require('../db/index.js').db;
 
 // configure port (default to localhost:3000)
 const PORT = process.env.PORT || 3000;
@@ -21,7 +23,7 @@ app.listen(PORT, () => {
 });
 
 // import middleware from all features
-require('../routes/index.js')(app)
+require('../routes/index.js').middlewareFunctions(app);
 
 // GET for default: #/
 app.get('/', (req, res) => {
