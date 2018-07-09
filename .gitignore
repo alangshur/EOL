@@ -1,2 +1,2 @@
-# ignore process.env file
 *.env
+.DS_Store
