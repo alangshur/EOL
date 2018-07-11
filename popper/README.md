@@ -1,7 +1,5 @@
 # Front-End Structure:
 
-# Front-End Standards:
-
 # Temp Notes:
 
 Communication between Popper and Kuhn, or between Backbone and Express, will only occur under three separate events:
