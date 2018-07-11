@@ -26,6 +26,5 @@ Developers:
 
 Stop comming (.gitignore):
 - node_modules
-- npm-debug.log
 - package-lock.json
-
+Build (secure) shared cloud collection of ignored files
