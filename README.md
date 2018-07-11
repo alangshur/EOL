@@ -22,3 +22,10 @@ Developers:
 - Alex Langshur
 - Ryan Kearns
 
+### TODO
+
+Stop comming (.gitignore):
+- node_modules
+- npm-debug.log
+- package-lock.json
+
