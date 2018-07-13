@@ -2,14 +2,17 @@
 var fs = require('fs');
 var path = require('path');
 var express = require('express');
-var format = require('string-format');
+var bodyParser= require('body-parser'); 
 var envConfig = require('dotenv').config();
 
-// enable method mode for format module
-format.extend(String.prototype, {});
+// import custom packages
+var format = require('../routes/packages.js').formatter;
 
 // init express app
 app = express();
+
+// configure app npm modules
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // import mongo database configuration
 var db = require('../db/index.js').db;
@@ -19,7 +22,7 @@ const PORT = process.env.PORT || 3000;
 
 // set app to listen on PORT (http npm module deprecated)
 app.listen(PORT, () => {
-    console.log(`EOL running on port ${ PORT }`);
+    console.log('EOL running on port {}'.format(PORT));
 });
 
 // import middleware from all features

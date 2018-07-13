@@ -5,15 +5,6 @@ var format = require('string-format');
 // enable method mode for format module
 format.extend(String.prototype, {});
 
-// define middleware exports to main
-module.exports.middleware = function(app) {
-
-    // no middleware functions
-    (function noMiddlewareFunctions() {
-        console.log('No middleware functions in: {}'.format(__dirname));
-    })();
-}
-
 // format mongo database URI
 function formatURI() {
     return 'mongodb://{}:{}@{}/{}'.format(process.env.DATABASE_USERNAME, process.env.DATABASE_PASSWORD, 
@@ -28,6 +19,15 @@ MongoClient.connect(formatURI(), { useNewUrlParser: true }, (err, client) => {
     db = client.db(process.env.DATABASE_NAME);
     console.log('Mongo database {} connected'.format(process.env.DATABASE_NAME));
 });
+
+// define middleware exports to main
+module.exports.middleware = function(app) {
+
+    // no middleware functions
+    (function noMiddlewareFunctions() {
+        console.log('No middleware functions in: {}'.format(__dirname));
+    })();
+}
 
 // export mongo database
 module.exports.db = db;

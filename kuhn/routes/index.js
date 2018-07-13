@@ -1,9 +1,8 @@
 // init npm modules
 var fs = require('fs');
-var format = require('string-format');
 
-// enable method mode for format module
-format.extend(String.prototype, {});
+// import custom packages
+var format = require('./packages.js').formatter;
 
 // synchronously fetch middleware functions from every feature
 module.exports.middlewareFunctions = function(app) {
@@ -17,3 +16,4 @@ module.exports.middlewareFunctions = function(app) {
         });
     });
 }
+
