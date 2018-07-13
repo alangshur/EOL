@@ -22,3 +22,9 @@ Developers:
 - Alex Langshur
 - Ryan Kearns
 
+### TODO
+
+Stop comming (.gitignore):
+- node_modules
+- package-lock.json
+Build (secure) shared cloud collection of ignored files
