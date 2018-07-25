@@ -5,3 +5,13 @@ module.exports.formatter = function()  {
     
     return format;
 }
+
+module.exports.pathsys = function() {
+    _path = require('path');
+    _fs = require('fs');
+
+    return {
+        path: _path,
+        fs: _path
+    }
+}

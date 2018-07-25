@@ -1,9 +1,8 @@
 // init npm modules
 var MongoClient = require('mongodb').MongoClient;
-var format = require('string-format');
 
-// enable method mode for format module
-format.extend(String.prototype, {});
+// import custom packages
+var format = require('../routes/packages.js').formatter();
 
 // format mongo database URI
 function formatURI() {

@@ -2,9 +2,9 @@
 var fs = require('fs');
 
 // import custom packages
-var format = require('./packages.js').formatter;
+var format = require('./packages.js').formatter();
 
-// synchronously fetch middleware functions from every feature
+// synchronously fetch middleware functions from every feature (TODO --> UPGRADE TO ASYNC)
 module.exports.middlewareFunctions = function(app) {
     fs.readdirSync('{}/..'.format(__dirname)).forEach(function(featdir) {
         if (featdir == 'README.md' || featdir == 'main' || featdir == 'routes') return;
