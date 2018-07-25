@@ -7,6 +7,6 @@ module.exports.middleware = function(app) {
 
     // GET for login: #/login
     app.get('/login', (req, res) => {
-        res.sendFile(path.resolve(__dirname + './../../popper/html/login.html'));
+        res.sendFile(path.resolve(__dirname + './../../popper/login/login.html'));
     });
 }
