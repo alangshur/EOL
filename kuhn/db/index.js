@@ -19,14 +19,7 @@ MongoClient.connect(formatURI(), { useNewUrlParser: true }, (err, client) => {
     console.log('Mongo database {} connected'.format(process.env.DATABASE_NAME));
 });
 
-// define middleware exports to main
-module.exports.middleware = function(app) {
-
-    // no middleware functions
-    (function noMiddlewareFunctions() {
-        console.log('No middleware functions in: {}'.format(__dirname));
-    })();
-}
+// TODO: define middleware exports to main
 
 // export mongo database
 module.exports.db = db;
