@@ -1,0 +1,42 @@
+/* TAGS */
+
+body {
+    background-color: #000000;
+}
+
+/* IDS */ 
+
+#city-gif {
+    /* positioning */
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    object-fit: cover;
+
+    /* styling */
+    pointer-events: none
+}
+
+#login-block {
+    /* positioning */
+    position: absolute;
+    height: 400px;
+    width: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+
+    /* styling */
+    background-image: linear-gradient(#b39267, #7e6c56);
+    border-radius: 20px;
+    opacity: 0.6;
+    transition: 0.5s;
+}
+
+#login-block:hover {
+    opacity: 0.8;
+}

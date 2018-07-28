@@ -9,7 +9,6 @@
             // configure library modules
             'backbone': 'backbone-min',
             'jquery': 'jquery-min',
-            'react': 'react-min',
             'underscore': 'underscore-min',
 
             // configure custom modules
@@ -24,9 +23,6 @@
             },
             'jquery': {
                 exports: '$'
-            },
-            'react': {
-                exports: 'React'
             },
             'underscore': {
                 exports: '_'
