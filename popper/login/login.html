@@ -8,14 +8,16 @@
 
         <!-- stylesheets -->
         <link href="./_css/login.css" rel="stylesheet" type="text/css"> 
+        <link href="./_css/forms.css" rel="stylesheet" type="text/css"> 
     </head>
     <body>
         <div>
             <img id='city-gif' src="./../assets/media/city.gif" alt="City GIF">
         </div>
 
-        <div id='login-block'>
-
+        <div id='login-block' class='center'>
+            <div id='login-container' class='center'>
+            </div>
         </div>
 
         <!-- load requirejs with main/main -->
@@ -26,3 +28,17 @@
         <script type='application/javascript' src="./_js/login.js"></script>
     </body>
 </html>
+
+<script id='login-template' type='text/template'>
+    <img id='eol-logo' src="./../assets/images/eol-logo.png" alt="EOL Logo">
+    <div id='form-block'>
+        <input id='username' type="text" name="Username" placeholder='Username'>
+        <img id='username-icon' src="./../assets/images/username-icon.png" alt="Username Logo">
+        <input id='password' type="password" name="Password" placeholder='Password'>
+        <img id='password-icon' src="./../assets/images/password-icon.png" alt="Password Logo">
+        <button id='login-button'>Sign In</button>
+        <svg width="390" height="549" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <rect id='rect' class='rect1' x="45px" y="300px" rx="27" ry="27" width="300px" height="50px" />
+        </svg>
+    </div>
+</script>

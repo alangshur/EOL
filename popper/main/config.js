@@ -1,6 +1,9 @@
-// configure all requirejs modules (TODO --> SETUP REQUIREJS OPTIMIZER)
+// configure all requirejs modules
 (function() {
     var customModuleUrl = '../main/modules/'
+
+    // feature urls
+    var loginUrl = '../login/_js/'
 
     require.config({
         baseUrl: './../lib',
@@ -12,7 +15,10 @@
             'underscore': 'underscore-min',
 
             // configure custom modules
-            'format': customModuleUrl + 'format'
+            'format': customModuleUrl + 'format',
+
+            // configure login modules
+            'loginviews': loginUrl + 'views'
         },
         shim: {
     
@@ -26,12 +32,6 @@
             },
             'underscore': {
                 exports: '_'
-            },
-
-            // shim custom modules
-            'format': {
-                deps: ['string-format-min'],
-                exports: 'format'
             }
         }
     });

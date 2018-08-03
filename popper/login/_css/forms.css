@@ -1,0 +1,120 @@
+/* COLOR VARS */
+
+:root {
+  --primary-color: #867b6c;
+  --secondary-color: #303841;
+}
+
+/* PLACEHOLDER COLOR */
+
+::placeholder {
+  color: #ffffff;
+  opacity: 1;
+}
+
+:-ms-input-placeholder {
+  color: #ffffff;
+}
+
+::-ms-input-placeholder {
+  color: #ffffff;
+}
+
+/* TAGS */
+
+* {
+  box-sizing: border-box;
+}
+
+/* CLASSES */
+
+.rect1 {
+  /* positioning */
+  z-index: 1;
+  stroke-dashoffset: -729;
+  stroke-dasharray: 197 509;
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition: stroke-width 1s, stroke-dashoffset 1s, stroke-dasharray 1s;
+
+  /* styling */
+  fill: var(--primary-color);
+  stroke: var(--secondary-color);
+  stroke-width: 2.5px;
+}
+
+.rect2 {
+  /* positioning */
+  z-index: 1;
+  stroke-dashoffset: -1058;
+  stroke-dasharray: 197 509;
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition: stroke-width 1s, stroke-dashoffset 1s, stroke-dasharray 1s;
+
+  /* styling */
+  fill: var(--primary-color);
+  stroke: var(--secondary-color);
+  stroke-width: 2.5px;
+}
+
+/* IDS */
+
+#username {
+  /* positioning */
+  z-index: 2;
+  position: absolute;
+  margin-top: 254px;
+  margin-left: 120px;
+  padding-top: 21px;
+  width: 196px;
+  height: 44px;
+  transition: 450ms;
+  font-size: 13px;
+
+  /* styling */
+  font-family: "Roboto", sans-serif;
+  background: var(--primary-color);
+  color: #ffffff;
+  border: none;
+}
+
+#username:hover, #username:focus {
+  outline-width: 0;
+  font-size: 15px;
+}
+
+#password {
+  /* positioning */
+  z-index: 2;
+  position: absolute;
+  margin-top: 305px;
+  margin-left: 120px;
+  padding-top: 21px;
+  width: 196px;
+  height: 44px;
+  transition: 550ms;
+  font-size: 13px;
+
+  /* styling */
+  font-family: "Roboto", sans-serif;
+  background: var(--primary-color);
+  border: none;
+}
+
+#password:hover, #password:focus {
+  outline-width: 0;
+  font-size: 14px;
+}
+
+#username-icon {
+  width: 24px;
+  position: absolute;
+  top: 17.1rem;
+  left: 5.8rem;
+}
+
+#password-icon {
+  width: 12px;
+  position: absolute; 
+  top: 20.6rem;
+  left: 6.2rem;
+}
