@@ -7,9 +7,13 @@ require([
 ], function(Backbone, $, _, format, loginviews) {
     var app = {}
 
-    // build main loginview
+    // initialize main view
+    app.loginPageView = new loginviews.LoginPageView();
+
+    // initialize login view
     app.loginView = new loginviews.LoginView();
 
+    // manage form svg
     $('#username').on('focus', function() {
         $("#rect").removeClass('rect2').addClass('rect1')
     });
