@@ -86,18 +86,18 @@ button:focus {
     margin-left: auto;
     margin-right: auto;
     pointer-events: none;
-    top: 140px;
+    top: 130px;
     width: 85%;
 }
 
 #form-block {
     position: relative;
-    bottom: 150px;
+    bottom: 160px;
 }
 
 #register-form-block {
     position: relative;
-    bottom: 100px;
+    bottom: 110px;
 }
 
 #login-button, #register-button {
