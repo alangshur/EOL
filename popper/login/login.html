@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Login Main</title>
+        <title>EOL</title>
         
         <meta charset="utf-8">       
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,16 +16,15 @@
         </div>
 
         <div id='login-block' class='center'>
-            <div id='login-container' class='center'>
-            </div>
+            <div id='view-container' class='center'></div>
         </div>
 
         <!-- load requirejs with main/main -->
-        <script type='application/javascript' src="./../lib/require-min.js"></script>
-        <script type='application/javascript' src="./../main/config.js"></script>
+        <script type='application/javascript' src="./../lib/require-min.js" async></script>
+        <script type='application/javascript' src="./../main/config.js" async></script>
 
         <!-- load feature javascript files -->
-        <script type='application/javascript' src="./_js/login.js"></script>
+        <script type='application/javascript' src="./_js/login.js" async></script>
     </body>
 </html>
 
@@ -33,16 +32,44 @@
     <img id='eol-logo' src="./../assets/images/eol-logo.png" alt="EOL Logo">
     
     <div id='form-block'>
-        <input id='username' type="text" name="Username" placeholder='Username' spellcheck='false'>
+        <input id='login-username' type="text" name="Username" placeholder='Username' spellcheck='false' autocomplete='off'>
         <img id='username-icon' src="./../assets/images/username-icon.png" alt="Username Logo">
 
-        <input id='password' type="password" name="Password" placeholder='Password' spellcheck='false'>
+        <input id='login-password' type="password" name="Password" placeholder='Password' spellcheck='false' autocomplete='off'>
         <img id='password-icon' src="./../assets/images/password-icon.png" alt="Password Logo">
 
         <button id='login-button'>Sign In</button>
+        <button id='register-view-button'>Register</button>
         
-        <svg width="390" height="549" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <rect id='rect' class='rect1' x="45px" y="300px" rx="27" ry="27" width="300px" height="50px" />
+        <!-- SVG rect graphic -->
+        <svg id='svg-container' width="390" height="549">
+            <rect id='rect-1' class='rect-config-1' x="45px" y="300px" rx="27" ry="27" width="300px" height="50px" />
         </svg>
     </div>
 </script>
+
+<script id='register-template' type='text/template'>
+    <img id='eol-logo' src="./../assets/images/eol-logo.png" alt="EOL Logo">
+    
+    <div id='register-form-block'>
+        <input id='email' type="text" name="Email" placeholder='Email' spellcheck='false' autocomplete='off'>
+        <img id='email-icon' src="./../assets/images/email-icon.png" alt="Username Logo">
+
+        <input id='register-username' type="text" name="Username" placeholder='Username' spellcheck='false' autocomplete='off'>
+        <img id='username-icon' src="./../assets/images/username-icon.png" alt="Username Logo">
+
+        <input id='register-password' type="password" name="Password" placeholder='Password' spellcheck='false' autocomplete='off'>
+        <img id='password-icon' src="./../assets/images/password-icon.png" alt="Password Logo">
+
+        <button id='register-button'>Register</button>
+        <button id='back-button'>Back</button>
+
+        <!-- SVG rect graphics -->
+        <svg id='svg-container' width='390' height='549'>
+            <rect id='rect-2' class='rect-config-1' x='45px' y='250px' rx='27' ry='27' width='300px' height='50px'/>
+            <rect id='rect-3' class='rect-config-1' x='45px' y='300px' rx='27' ry='27' width='300px' height='50px'/>
+            <rect id='rect-4' class='rect-config-1' x='45px' y='250px' rx='50' ry='50' width='300px' height='100px'/>
+        </svg>
+    </div>
+</script>
+

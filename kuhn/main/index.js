@@ -29,6 +29,7 @@ switch(process.env.STATE) {
         mongoUtil.connect(databaseName, function() {
             console.log('Mongo DB (PROD) database connected');
         });
+
         break; 
     case 'DEV':
         var sessionSecret = process.env.SESSION_SECRET_DEV;
@@ -37,6 +38,7 @@ switch(process.env.STATE) {
         mongoUtil.connect(databaseName, function() {
             console.log('Mongo DB (DEV) database connected');
         });
+
         break; 
 }
 
@@ -53,12 +55,14 @@ app.use(session({
 
         return sessionHash;
     },
+
+    // get specified session secret
     secret: sessionSecret,
 
-    // persist session past cookies and memory cache
+    // persist sessions past cookies and memory cache
     store: new MongoStore({ url: mongoUtil.formatURI(databaseName) }),
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: true
 }));
 
 // configure port (default to localhost:3000)
@@ -66,7 +70,7 @@ const PORT = process.env.PORT || 3000;
 
 // set app to listen on PORT (http npm module deprecated)
 app.listen(PORT, () => {
-    console.log('EOL running on port {}'.format(PORT));
+    console.log('EOL {} instance running on port {}'.format(process.env.STATE, PORT));
 });
 
 // import middleware from all features

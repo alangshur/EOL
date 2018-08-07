@@ -12,6 +12,34 @@ html, body {
     overflow: hidden;
 }
 
+button {
+   /* positioning */
+   position: absolute;
+   z-index: 100;
+   width: 185px;
+   height: 35px; 
+   margin-left: 101px;
+   transition: 500ms;
+
+   /* styling */
+   background: var(--primary-color);
+   border: 2px solid var(--secondary-color);
+   font-family: "Roboto", sans-serif;
+   cursor: pointer;
+   color: #ffffff;
+   font-size: 14px;
+   border-radius: 22px;
+}
+
+button:hover {
+    color: var(--primary-color);
+    background: #ffffff;
+}
+
+button:focus {
+    outline-width: 0;
+}
+
 /* CLASSES */
 
 .center {
@@ -58,41 +86,24 @@ html, body {
     margin-left: auto;
     margin-right: auto;
     pointer-events: none;
-    top: 150px;
+    top: 140px;
     width: 85%;
 }
 
 #form-block {
     position: relative;
-    bottom:145px;
+    bottom: 150px;
 }
 
-#login-button {
-    /* positioning */
-    position: absolute;
-    z-index: 100;
-    width: 149px;
-    height: 43px;
+#register-form-block {
+    position: relative;
+    bottom: 100px;
+}
+
+#login-button, #register-button {
     margin-top: 421px;
-    margin-left: 120.5px;
-    transition: 500ms;
-
-    /* styling */
-    background: var(--primary-color);
-    border: 2px solid var(--secondary-color);
-    font-family: "Roboto", sans-serif;
-    cursor: pointer;
-    color: #ffffff;
-    font-size: 16px;
-    border-radius: 22px;
-  }
-  
-  
-#login-button:hover {
-    color: var(--primary-color);
-    background: #ffffff;
 }
 
-#login-button:focus {
-    outline-width: 0;
+#register-view-button, #back-button {
+    margin-top: 468px;
 }

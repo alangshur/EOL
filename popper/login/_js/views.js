@@ -1,50 +1,219 @@
 define([
     'backbone',
-    'jquery',
+    'jquery-wrapper',
     'underscore',
     'format'
-], function(Backbone, $, _, format) {
+], function(Backbone, $, _, __format__) {
     var app = {};
-
+    
     // define main login view
-    app.LoginPageView = Backbone.View.extend({
-        el: '#login-container',
+    app.PageView = Backbone.View.extend({
+        el: '#view-container',
+
+        // register click and focus events
+        events: {
+            'click #back-button': 'loadLoginTemplate',
+            'click #register-view-button': 'loadRegisterTemplate',
+            'focus #login-username': 'loadLoginRectUsername',
+            'focus #login-password': 'loadLoginRectPassword',
+            'focus #register-username': 'loadRegisterRectUsername',
+            'focus #register-password': 'loadRegisterRectPassword',
+            'focus #email': 'loadRegisterRectEmail',
+            'enter #login-password': 'loginWithEnter',
+            'enter #register-password': 'registerWithEnter'
+        },
 
         // render view upon initialization
         initialize: function() {
-            this.render();
+            this.loadLoginTemplate();            
         },
 
         // render LoginPageView template
         render: function() {
+            this.$el.html(this.template);
+        },
+
+        // load login template
+        loadLoginTemplate: function() {
             this.template = _.template($('#login-template').html());
-            this.$el.append(this.template);
-        }
+            this.render();
+
+            // initialize jQuery object for SVG container
+            this.$svgContainer = $('#svg-container');
+
+            // initialize jQuery object for SVG rect
+            this.$rectOne = $('#rect-1');
+
+            // re-initialize attached register view
+            this.loginView = new app.LoginView();
+
+            // reload jquery "enter event" plugin listener for new template
+            $.fn.loadEnterListener();
+        },
+
+        // load register template
+        loadRegisterTemplate: function() {
+            this.template = _.template($('#register-template').html());
+            this.render();
+
+            // initialize jQuery object for SVG container
+            this.$svgContainer = $('#svg-container');
+
+            // initialize jQuery objects for different SVG rects
+            this.$rectTwo = $('#rect-2');
+            this.$rectThree = $('#rect-3');
+            this.$rectFour = $('#rect-4');
+
+            // setup initial rect configuration
+            this.$rectThree.hide();
+            this.$rectFour.hide();
+
+            this.lastForm = 'email';
+
+            // re-initialize attached register view
+            this.registerView = new app.RegisterView();
+
+            // reload jquery "enter event" plugin listener for new template
+            $.fn.loadEnterListener();
+        },
+
+        // configure rect SVG transformations
+        loadLoginRectUsername: function() {
+            this.$rectOne.removeClass().addClass('rect-config-1');
+        },
+        loadLoginRectPassword: function() {
+            this.$rectOne.removeClass().addClass('rect-config-2');
+        },
+        loadRegisterRectUsername: function() {
+            if (this.lastForm == 'email') {
+                this.$rectThree.hide();
+                this.$rectFour.hide();
+                this.$rectTwo.show();
+
+                this.$rectTwo.removeClass().addClass('rect-config-2');
+            }
+            else if (this.lastForm == 'password') {
+                this.$rectTwo.hide();
+                this.$rectFour.hide();
+                this.$rectThree.show();
+
+                this.$rectThree.removeClass().addClass('rect-config-1');
+            }
+
+            this.lastForm = 'username';
+        },
+        loadRegisterRectPassword: function() {
+            if (this.lastForm == 'username') {
+                this.$rectTwo.hide();
+                this.$rectThree.show();
+
+                this.$rectThree.removeClass().addClass('rect-config-2');
+                this.$rectFour.removeClass().addClass('rect-config-4');
+            }
+            else if (this.lastForm == 'email') {
+                this.$rectTwo.hide();
+                this.$rectThree.hide();
+                this.$rectFour.show();
+
+                this.$rectTwo.removeClass().addClass('rect-config-2');
+                this.$rectThree.removeClass().addClass('rect-config-2');
+                this.$rectFour.removeClass().addClass('rect-config-4');
+            }
+
+            this.lastForm = 'password';
+        },
+        loadRegisterRectEmail: function()  {
+            if (this.lastForm == 'username') {
+                this.$rectThree.hide();
+                this.$rectTwo.show();
+
+                this.$rectTwo.removeClass().addClass('rect-config-1');
+                this.$rectFour.removeClass().addClass('rect-config-3');
+            }
+            else if (this.lastForm == 'password') {
+                this.$rectTwo.hide();
+                this.$rectThree.hide();
+                this.$rectFour.show();
+
+                this.$rectTwo.removeClass().addClass('rect-config-1');
+                this.$rectThree.removeClass().addClass('rect-config-1');
+                this.$rectFour.removeClass().addClass('rect-config-3');
+            }
+            
+            this.lastForm = 'email';
+        },
+
+        // jquery "enter event" plugin callbacks
+        loginWithEnter: function() {
+            this.loginView.validateCredentials();
+        },
+        registerWithEnter: function() {
+            this.registerView.validateCredentials();
+        },
     });
 
+    // define login button functionality
     app.LoginView = Backbone.View.extend({
         el: '#login-button',
 
-        // register click event on login button
+        // register click and custom enter event on login button
         events: {
             'click': 'validateCredentials'
         },
 
         // login user with credentials
         validateCredentials: function() {
-            var _username = $('#username').val();
-            var _password = $('#password').val();
+            var _username = $('#login-username').val();
+            var _password = $('#login-password').val();
 
-            $.get('/login/db', {
-                username: _username,
-                password: _password
-            }, function(data, status) {
-                if (status == 'success') {
-                    console.log(data)
-                }
+            // ajax GET request
+            $.ajax({
+                url: '/login/db',
+                data: {
+                    username: _username,
+                    password: _password
+                },
+                success: function(data) {
+                    console.log(data);
+                },
+                dataType: 'json'
             });
 
             console.log('Credentials: ' + _username + ', ' + _password);
+        }
+    });
+
+    // define register button functionality
+    app.RegisterView = Backbone.View.extend({
+        el: '#register-button',
+
+        // register click and custom enter event on register button
+        events: {
+            'click': 'validateCredentials',
+        },
+
+        // login user with credentials
+        validateCredentials: function() {
+            var _email = $('#email').val();
+            var _username = $('#register-username').val();
+            var _password = $('#register-password').val();
+
+            // ajax POST request
+            $.ajax({
+                type: "POST",
+                url: '/login/db',
+                data: {
+                    email: _email,
+                    username: _username,
+                    password: _password
+                },
+                success: function(data) {
+                    console.log(data);
+                },
+                dataType: 'json'
+            });
+
+            console.log('Credentials: ' + _email + ', ' + _username + ', ' + _password);
         }
     });
 

@@ -17,4 +17,11 @@ module.exports.middleware = function(app) {
 
         console.log('GET Request @ login/db');
     });
+
+    // POST for login db: #/login/db
+    app.post('/login/db', (req, res) => {
+        res.json({"sessionID": req.sessionID});
+
+        console.log('POST Request @ login/db');
+    });
 }
