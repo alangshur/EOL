@@ -1,7 +1,7 @@
 // init npm modules
 var fs = require('fs');
 
-// import custom packages
+// init custom packages
 var format = require('./packages.js').formatter();
 
 // synchronously fetch middleware functions from every feature (TODO --> UPGRADE TO ASYNC)

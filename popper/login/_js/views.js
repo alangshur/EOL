@@ -166,6 +166,8 @@ define([
             var _username = $('#login-username').val();
             var _password = $('#login-password').val();
 
+            var errorMessage = null;
+
             // ajax GET request
             $.ajax({
                 url: '/login/db',
@@ -175,11 +177,34 @@ define([
                 },
                 success: function(data) {
                     console.log(data);
+
+                    errorMessage = data.errorMessage;
                 },
                 dataType: 'json'
-            });
+            }).done(function() {
 
-            console.log('Credentials: ' + _username + ', ' + _password);
+                // if errorMessage is not null, display error shake animation with message
+                if (errorMessage) {
+                    $('#login-button').removeClass().addClass('shake-animation');
+
+                    var el = $('#login-button');
+                    var errorEl = $('#login-error-message');
+
+                    // create identical element for next run of animation
+                    newone = el.clone(true); 
+                    el.before(newone);
+                    el.remove();
+
+                    if (errorEl.css('display') == 'none') {
+                        // display error message
+                        errorEl.show();
+
+                        setTimeout(function(){
+                            errorEl.hide();
+                        }, 3000);
+                    }
+                }
+            });
         }
     });
 
@@ -198,6 +223,8 @@ define([
             var _username = $('#register-username').val();
             var _password = $('#register-password').val();
 
+            var errorMessage = null;
+
             // ajax POST request
             $.ajax({
                 type: "POST",
@@ -209,11 +236,34 @@ define([
                 },
                 success: function(data) {
                     console.log(data);
+
+                    errorMessage = data.errorMessage;
                 },
                 dataType: 'json'
-            });
+            }).done(function() {
 
-            console.log('Credentials: ' + _email + ', ' + _username + ', ' + _password);
+                // if errorMessage is not null, display error shake animation with message
+                if (errorMessage) {
+                    $('#register-button').removeClass().addClass('shake-animation');
+
+                    var el = $('#register-button');
+                    var errorEl = $('#register-error-message');
+
+                    // create identical element for next run of animation
+                    newone = el.clone(true); 
+                    el.before(newone);
+                    el.remove();
+
+                    if (errorEl.css('display') == 'none') {
+                        // display error message
+                        errorEl.show();
+
+                        setTimeout(function(){
+                            errorEl.hide();
+                        }, 3000);
+                    }
+                }
+            });
         }
     });
 

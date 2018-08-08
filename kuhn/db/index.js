@@ -1,7 +1,7 @@
 // init npm modules
 var MongoClient = require('mongodb').MongoClient;
 
-// import custom packages
+// init custom packages
 var format = require('../routes/packages.js').formatter();
 
 // export mongo database

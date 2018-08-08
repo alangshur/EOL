@@ -10,10 +10,10 @@ var uuid = require('uuid');
 var helmet = require('helmet');
 var envConfig = require('dotenv').config();
 
-// import mongo database utility
+// init mongo database utility
 var mongoUtil = require('../db/index.js').mongoUtil;
 
-// import custom packages
+// init custom packages
 var format = require('../routes/packages.js').formatter();
 var {path, fs} = require('../routes/packages.js').pathsys();
 
