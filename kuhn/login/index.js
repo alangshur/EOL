@@ -23,7 +23,7 @@ module.exports.middleware = function(app) {
         var username = req.query.username;
         var password = req.query.password;
         var errorMessage = credentials.validateLogin(username, password);
-
+        
         // configure response json (errorMessage is null if credentials are valid)
         res.json({
             'errorMessage': errorMessage

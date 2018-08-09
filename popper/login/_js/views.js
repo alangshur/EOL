@@ -193,6 +193,9 @@ define([
                     el.before(newone);
                     el.remove();
 
+                    // set text content
+                    $('#login-error-message span').text(errorMessage);
+
                     if (errorEl.css('display') == 'none') {
                         // display error message
                         errorEl.show();
@@ -249,6 +252,9 @@ define([
                     newone = el.clone(true); 
                     el.before(newone);
                     el.remove();
+
+                    // set text content
+                    $('#register-error-message span').text(errorMessage);
 
                     if (errorEl.css('display') == 'none') {
                         // display error message
