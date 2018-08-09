@@ -1,14 +1,7 @@
 // init npm modules
 var express = require('express');
-var bodyParser= require('body-parser'); 
-
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
-var crypto = require('crypto');
-var uuid = require('uuid');
-
+var bodyParser = require('body-parser'); 
 var helmet = require('helmet');
-var envConfig = require('dotenv').config();
 
 // init mongo database utility
 var mongoUtil = require('../db/index.js').mongoUtil;
@@ -17,8 +10,15 @@ var mongoUtil = require('../db/index.js').mongoUtil;
 var format = require('../routes/packages.js').formatter();
 var {path, fs} = require('../routes/packages.js').pathsys();
 
-// init express app
+// init express app with environment variables
 app = express();
+require('dotenv').config();
+
+// configure middleware
+app.use(express.static(path.join(__dirname, './../../popper')));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(helmet());
 
 // get appropriate session secret and connect mongo
 switch(process.env.STATE) {
@@ -42,33 +42,12 @@ switch(process.env.STATE) {
         break; 
 }
 
-// configure app npm modules
-app.use(express.static(path.join(__dirname, './../../popper')));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(helmet());
+// import user configuration
+require('./user.js')(app, sessionSecret, databaseName, mongoUtil);
 
-// configure user session
-app.use(session({
-    genid: (req) => {
-        const sessionHash = crypto.createHash('sha256').update(uuid.v1()).update(crypto.randomBytes(256)).digest('hex');
-        console.log('New session with ID: {}'.format(sessionHash));
-
-        return sessionHash;
-    },
-
-    // get specified session secret
-    secret: sessionSecret,
-
-    // persist sessions past cookies and memory cache
-    store: new MongoStore({ url: mongoUtil.formatURI(databaseName) }),
-    resave: false,
-    saveUninitialized: true
-}));
-
-// configure port (default to localhost:3000)
+// configure PORT (default to localhost:3000)
 const PORT = process.env.PORT || 3000;
 
-// set app to listen on PORT (http npm module deprecated)
 app.listen(PORT, () => {
     console.log('EOL {} instance running on port {}'.format(process.env.STATE, PORT));
 });

@@ -176,8 +176,6 @@ define([
                     password: _password
                 },
                 success: function(data) {
-                    console.log(data);
-
                     errorMessage = data.errorMessage;
                 },
                 dataType: 'json'
@@ -235,8 +233,6 @@ define([
                     password: _password
                 },
                 success: function(data) {
-                    console.log(data);
-
                     errorMessage = data.errorMessage;
                 },
                 dataType: 'json'
