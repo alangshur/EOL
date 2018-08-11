@@ -170,12 +170,15 @@ define([
 
             // ajax GET request
             $.ajax({
+                type: "POST",
                 url: '/login/db',
                 data: {
                     username: _username,
                     password: _password
                 },
                 success: function(data) {
+                    if (data.redirect) return;
+
                     errorMessage = data.errorMessage;
                 },
                 dataType: 'json'
@@ -187,23 +190,31 @@ define([
 
                     var el = $('#login-button');
                     var errorEl = $('#login-error-message');
+                    var errorSpan = $('#login-error-message span');
 
                     // create identical element for next run of animation
                     newone = el.clone(true); 
                     el.before(newone);
                     el.remove();
 
-                    // set text content
-                    $('#login-error-message span').text(errorMessage);
-
-                    if (errorEl.css('display') == 'none') {
-                        // display error message
-                        errorEl.show();
-
-                        setTimeout(function(){
-                            errorEl.hide();
-                        }, 3000);
+                    // clear previous timeout if display is not 'none'
+                    if (errorEl.css('display') != 'none') {
+                        clearTimeout(errorEl.data('timeoutId'));
+                        errorEl.removeData('timeoutId');
+                        errorEl.hide();
                     }
+
+                    // display error message
+                    errorSpan.text(errorMessage);
+                    errorEl.show();
+
+                    var timeoutId = setTimeout(function() {
+                        errorEl.removeData('timeoutId');
+                        errorEl.hide();
+                    }, 4000);
+
+                    // persist timeoutId through DOM
+                    errorEl.data('timeoutId', timeoutId);
                 }
             });
         }
@@ -229,13 +240,15 @@ define([
             // ajax POST request
             $.ajax({
                 type: "POST",
-                url: '/login/db',
+                url: '/register/db',
                 data: {
                     email: _email,
                     username: _username,
                     password: _password
                 },
                 success: function(data) {
+                    if (data.redirect) return;
+
                     errorMessage = data.errorMessage;
                 },
                 dataType: 'json'
@@ -247,23 +260,31 @@ define([
 
                     var el = $('#register-button');
                     var errorEl = $('#register-error-message');
+                    var errorSpan = $('#register-error-message span');
 
                     // create identical element for next run of animation
                     newone = el.clone(true); 
                     el.before(newone);
                     el.remove();
 
-                    // set text content
-                    $('#register-error-message span').text(errorMessage);
-
-                    if (errorEl.css('display') == 'none') {
-                        // display error message
-                        errorEl.show();
-
-                        setTimeout(function(){
-                            errorEl.hide();
-                        }, 3000);
+                    // clear previous timeout if display is not 'none'
+                    if (errorEl.css('display') != 'none') {
+                        clearTimeout(errorEl.data('timeoutId'));
+                        errorEl.removeData('timeoutId');
+                        errorEl.hide();
                     }
+
+                    // display error message
+                    errorSpan.text(errorMessage);
+                    errorEl.show();
+
+                    var timeoutId = setTimeout(function() {
+                        errorEl.removeData('timeoutId');
+                        errorEl.hide();
+                    }, 4000);
+
+                    // persist timeoutId through DOM
+                    errorEl.data('timeoutId', timeoutId);
                 }
             });
         }

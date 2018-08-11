@@ -7,10 +7,7 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
     var crypto = require('crypto');
     var session = require('express-session');
     var MongoStore = require('connect-mongo')(session);
-
-    // configure middleware
-    app.use(passport.initialize());
-    app.use(passport.session());
+    var ObjectID = require('mongodb').ObjectID;
 
     // configure user session middleware
     app.use(session({
@@ -30,6 +27,47 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
         saveUninitialized: true
     }));
 
-    // import passport configuration
-    require('./../login/index').passportConfig(passport, LocalStrategy);
+    // configure passport middleware
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    passport.use(new LocalStrategy(async function(username, password, done) {  
+        try {
+            var user = await mongoUtil.User().findOne({ username: username });
+        }
+        catch (err) {
+            console.log('Error authenticating user: {}'.format(err));
+            return done(err);
+        }
+
+        if (!user) {
+            return done(null, false);
+        }
+        else {
+            return done(null, user);
+        }
+    }));
+
+    passport.serializeUser(function(user, done) {
+        done(null, user._id);
+    });
+
+    passport.deserializeUser(async function(id, done) {
+        try {
+            var user = await mongoUtil.User().findOne({ _id: new ObjectID(id) });
+        }
+        catch (err) {
+            console.log('Error deserializing user: {}'.format(err));
+            return done(null, false);
+        }
+        
+        if (!user) {
+            return done(null, false);
+        }
+        else {
+            return done(null, user);
+        }
+    });
+
+    return passport;
 }
