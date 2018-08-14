@@ -5,11 +5,47 @@ require('string-format').extend(String.prototype, {});
 // init login packages
 var credentials = require('./credentials.js');
 
+// define authentication function for login and registration
+function authenticateUser(req, res, next, passport) {
+    passport.authenticate('local', function(err, user, info) {
+
+        // handle authentication error
+        if (err) {
+            console.log('Authentication error: {}'.format(info.message));
+
+            return;
+        }
+
+        req.login(user, function(err) {
+            
+            // handle authentication success 
+            if (req.isAuthenticated()) {
+                console.log('Authentication sucess: {}'.format(info.message));
+
+                // send success response
+                res.json({
+                    'errorMessage': null
+                });
+            }
+
+            // handle authentication failure
+            else {
+                console.log('Authentication failure: {}'.format(info.message));
+
+                // send json response with authentication failure message
+                res.json({
+                    'errorMessage': info.message
+                });
+            }
+        });
+    })(req, res, next);
+}
+
 // define middleware exports to main
-module.exports.middleware = function(app, passport) {
+module.exports.middleware = function(app, kwargs) {
 
     // GET for login: #/login
-    app.get('/login', (req, res) => {
+    app.get('/login', (req, res, next) => {
         console.log('GET Request @ /login');
 
         res.sendFile(path.resolve(__dirname + './../../popper/login/login.html'));
@@ -32,28 +68,12 @@ module.exports.middleware = function(app, passport) {
             return;
         }
 
-        passport.authenticate('local', function(err, user, info) {
-            req.login(user, function(err) {
-
-                // redirect home if user is authenticated
-                if (req.isAuthenticated()) {
-
-                    // trigger HTTP 303 (not 302)
-                    res.redirect(303, '/home');
-                }
-                else {
-
-                    // send json response with error message if user is not authenticated
-                    res.json({
-                        'errorMessage': errorMessage
-                    });
-                }
-            });
-        })(req, res, next);
+        // authenitcate logged-in user
+        authenticateUser(req, res, next, kwargs['passport']);
     });
 
     // POST for registering user: #/register/db
-    app.post('/register/db', (req, res) => {
+    app.post('/register/db', async (req, res, next) => {
         console.log('POST Request @ /register/db');
 
         var email = req.body.email;
@@ -61,8 +81,62 @@ module.exports.middleware = function(app, passport) {
         var password = req.body.password;
         var errorMessage = credentials.validateRegister(email, username, password);
 
-        res.json({
-            'errorMessage': errorMessage
+        // send json response with error message if not null
+        if (errorMessage) {
+            res.json({
+                'errorMessage': errorMessage
+            });
+
+            return;
+        }
+
+        // check if email already exists
+        try {
+            user = await kwargs['mongoUtil'].User().findOne({ email: email });
+        }
+        catch (err) {
+            return console.log('Registration error: {}'.format(err));
+        }
+
+        if (user) {
+            res.json({
+                'errorMessage': 'Email has already been registered'
+            });
+
+            return;
+        }
+
+        // check if username already exists
+        try {
+            var user = await kwargs['mongoUtil'].User().findOne({ username: username });
+        }
+        catch (err) {
+            return console.log('Registration error: {}'.format(err));
+        }
+
+        if (user) {
+            res.json({
+                'errorMessage': 'Username already exists'
+            });
+
+            return;
+        }
+
+        // register user
+        await kwargs['mongoUtil'].User().insertOne({
+            'email': email,
+            'username': username,
+            'password': password
+        }, 
+        function(err) {
+            if (err) {
+                return console.log('Registration error: {}'.format(err));
+            }
+
+            console.log('Registration Success: \"{}\"'.format(username));
         });
+
+        // authenticate registered user
+        authenticateUser(req, res, next, kwargs['passport']);
     });
 }

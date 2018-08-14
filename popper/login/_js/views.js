@@ -211,10 +211,15 @@ define([
                     var timeoutId = setTimeout(function() {
                         errorEl.removeData('timeoutId');
                         errorEl.hide();
-                    }, 4000);
+                    }, 3000);
 
                     // persist timeoutId through DOM
                     errorEl.data('timeoutId', timeoutId);
+                }
+
+                // if errorMessage is null, redirect to home
+                else {
+                    window.location.href = '/home';
                 }
             });
         }
@@ -281,10 +286,15 @@ define([
                     var timeoutId = setTimeout(function() {
                         errorEl.removeData('timeoutId');
                         errorEl.hide();
-                    }, 4000);
+                    }, 3000);
 
                     // persist timeoutId through DOM
                     errorEl.data('timeoutId', timeoutId);
+                }
+
+                // if errorMessage is null, redirect to home
+                else {
+                    window.location.href = '/home';
                 }
             });
         }

@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var helmet = require('helmet');
 var path = require('path');
+var request = require('request');
 require('string-format').extend(String.prototype, {});
 
 // init mongo database utility
@@ -31,8 +32,12 @@ mongoUtil.connect(databaseName, function() {
     // import passport configuration
     var passport = require('./user.js')(app, sessionSecret, databaseName, mongoUtil);
 
-    // import middleware from all features
-    require('./routes.js').middlewareFunctions(app, passport);
+    // import middleware from all features with customizable kwargs for popular modules
+    require('./routes.js').middlewareFunctions(app, {
+        'passport': passport,
+        'mongoUtil': mongoUtil,
+        'request': request
+    });
 });
 
 // connect to EOL instance on PORT

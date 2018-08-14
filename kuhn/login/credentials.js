@@ -16,12 +16,18 @@ module.exports = {
         }
 
         // check email credential
-
+        if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(email))) {
+            return 'Please enter a valid email address'
+        }
+        
         // check username credential
+        if (!(/^.{4,128}$/.test(password))) {
+            return 'Username must be greater than 3 characters in length';
+        }
 
         // check password credential
-        if (!(/^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{4,128}$/.test(password))) {
-            return 'Password must be greater than 4 characters in length and contain one letter, number, and special character';
+        if (!(/^.{4,128}$/.test(password))) {
+            return 'Password must be greater than 3 characters in length';
         }
         
         return null;

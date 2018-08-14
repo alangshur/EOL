@@ -36,15 +36,23 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
             var user = await mongoUtil.User().findOne({ username: username });
         }
         catch (err) {
-            console.log('Error authenticating user: {}'.format(err));
-            return done(err);
+            return done(err, false, { message: 'Error authenticating user {}'.format(err) });
         }
 
+        // check if db query returned user
         if (!user) {
-            return done(null, false);
+            return done(null, false, { message: 'Username is not registered' });
         }
+
+        // validate user if not null
         else {
-            return done(null, user);
+
+            // check for correct password
+            if (user.password != password) {
+                return done(null, false, { message: 'Password does not match username' });
+            }
+
+            return done(null, user, { message: 'User \"{}\" successfully authenticated'.format(username) });
         }
     }));
 
