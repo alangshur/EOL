@@ -1,35 +1,5 @@
-// init login packages
+// init credentials module
 const credentials = require('./credentials.js');
-
-// define authentication function for login and registration
-function authenticateUser(req, res, next, kwargs) {
-    kwargs['string-format']();
-
-    kwargs['passport'].authenticate('local', function(err, user, info) {
-        req.login(user, function(err) {
-
-            // handle authentication success
-            if (req.isAuthenticated()) {
-                console.log('Authentication sucess: {}'.format(info.message));
-
-                // send json success response (null error message)
-                res.json({
-                    'errorMessage': null
-                });
-            }
-
-            // handle authentication failure
-            else {
-                console.log('Authentication failure: {}'.format(info.message));
-
-                // send json response with authentication failure message
-                res.json({
-                    'errorMessage': info.message
-                });
-            }
-        });
-    })(req, res, next);
-}
 
 // define middleware exports to main
 module.exports.middleware = function(app, kwargs) {
@@ -60,7 +30,7 @@ module.exports.middleware = function(app, kwargs) {
         }
 
         // authenitcate logged-in user
-        authenticateUser(req, res, next, kwargs);
+        credentials.authenticateUser(req, res, next, kwargs);
     });
 
     // POST for registering user: #/register/db
@@ -112,8 +82,6 @@ module.exports.middleware = function(app, kwargs) {
 
             return;
         }
-
-        /* -- HASH PASSWORD -- */
         
         // set salt rounds to constant (hash cost = 2^rounds)
         const saltRounds = process.env['SALT_ROUNDS_{}'.format(process.env.STATE)];
@@ -146,7 +114,7 @@ module.exports.middleware = function(app, kwargs) {
                 });
 
                 // authenticate registered user
-                authenticateUser(req, res, next, kwargs);
+                credentials.authenticateUser(req, res, next, kwargs);
             });
         });
     });

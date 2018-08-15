@@ -1,4 +1,35 @@
+// define credentials export
 module.exports = {
+
+    // authenticate req user for login and regestration
+    authenticateUser: function(req, res, next, kwargs) {
+        kwargs['string-format']();
+
+        kwargs['passport'].authenticate('local', function(err, user, info) {
+            req.login(user, function(err) {
+
+                // handle authentication success
+                if (req.isAuthenticated()) {
+                    console.log('Authentication sucess: {}'.format(info.message));
+
+                    // send json success response (null error message)
+                    res.json({
+                        'errorMessage': null
+                    });
+                }
+
+                // handle authentication failure
+                else {
+                    console.log('Authentication failure: {}'.format(info.message));
+
+                    // send json response with authentication failure message
+                    res.json({
+                        'errorMessage': info.message
+                    });
+                }
+            });
+        })(req, res, next);
+    },
 
     // validate login credentials
     validateLogin: function(username, password) {

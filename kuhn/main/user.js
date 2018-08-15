@@ -28,7 +28,7 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
         saveUninitialized: true
     }));
 
-    // configure passport middleware
+    // configure app-passport middleware
     app.use(passport.initialize());
     app.use(passport.session());
 

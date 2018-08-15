@@ -7,18 +7,19 @@ const path = require('path');
 const bcrypt = require('bcrypt-nodejs');
 require('string-format').extend(String.prototype, {});
 
-// init mongo database utility
-const mongoUtil = require('./db.js').mongoUtil;
-
 // init express app with environment variables
 app = express();
 require('dotenv').config();
+
+// init mongo database utility
+const mongoUtil = require('./db.js').mongoUtil;
 
 // configure universal middleware constants
 const state = process.env.STATE;
 const sessionSecret = process.env['SESSION_SECRET_{}'.format(state)];
 const databaseName = process.env['DATABASE_NAME_{}'.format(state)];
 
+// configure universal app middleware
 app.use(express.static(path.join(__dirname, './../../popper')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -32,11 +33,10 @@ mongoUtil.connect(databaseName, function() {
     // setup user and import passport configuration
     const passport = require('./user.js')(app, sessionSecret, databaseName, mongoUtil);
 
-    // import middleware from all features with customizable kwargs for popular modules
+    // import middleware from all features (pass necessary modules)
     require('./routes.js').middlewareFunctions(app, {
         'passport': passport,
         'mongoUtil': mongoUtil,
-        'request': request,
         'path': path,
         'bcrypt': bcrypt,
         'string-format': () => {

@@ -2,10 +2,11 @@
 const MongoClient = require('mongodb').MongoClient;
 require('string-format').extend(String.prototype, {});
 
-// export mongo database
+// persist mongo database variable
 var _db;
 var isConnected = false;
 
+// define mongo utility export
 module.exports.mongoUtil = {
 
     // connect to specified db with callback
