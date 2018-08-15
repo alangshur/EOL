@@ -1,5 +1,5 @@
 // init npm modules
-var MongoClient = require('mongodb').MongoClient;
+const MongoClient = require('mongodb').MongoClient;
 require('string-format').extend(String.prototype, {});
 
 // export mongo database

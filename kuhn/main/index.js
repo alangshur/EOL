@@ -1,23 +1,24 @@
 // init npm modules
-var express = require('express');
-var bodyParser = require('body-parser'); 
-var cookieParser = require('cookie-parser');
-var helmet = require('helmet');
-var path = require('path');
-var request = require('request');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const path = require('path');
+const request = require('request');
+const bcrypt = require('bcrypt-nodejs');
 require('string-format').extend(String.prototype, {});
 
 // init mongo database utility
-var mongoUtil = require('./db.js').mongoUtil;
+const mongoUtil = require('./db.js').mongoUtil;
 
 // init express app with environment variables
 app = express();
 require('dotenv').config();
 
-// configure universal middleware
+// configure universal middleware constants
 const state = process.env.STATE;
-const sessionSecret = process.env['SESSION_SECRET_{}'.format(process.env.STATE)];
-const databaseName = process.env['DATABASE_NAME_{}'.format(process.env.STATE)];
+const sessionSecret = process.env['SESSION_SECRET_{}'.format(state)];
+const databaseName = process.env['DATABASE_NAME_{}'.format(state)];
 
 app.use(express.static(path.join(__dirname, './../../popper')));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -29,14 +30,19 @@ app.use(helmet());
 mongoUtil.connect(databaseName, function() {
     console.log('Mongo DB ({}) database connected'.format(state));
 
-    // import passport configuration
-    var passport = require('./user.js')(app, sessionSecret, databaseName, mongoUtil);
+    // setup user and import passport configuration
+    const passport = require('./user.js')(app, sessionSecret, databaseName, mongoUtil);
 
     // import middleware from all features with customizable kwargs for popular modules
     require('./routes.js').middlewareFunctions(app, {
         'passport': passport,
         'mongoUtil': mongoUtil,
-        'request': request
+        'request': request,
+        'path': path,
+        'bcrypt': bcrypt,
+        'string-format': () => {
+            require('string-format').extend(String.prototype, {});
+        }
     });
 });
 

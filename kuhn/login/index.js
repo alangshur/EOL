@@ -1,28 +1,25 @@
-// init npm modules
-var path = require('path');
-require('string-format').extend(String.prototype, {});
-
 // init login packages
-var credentials = require('./credentials.js');
+const credentials = require('./credentials.js');
 
 // define authentication function for login and registration
-function authenticateUser(req, res, next, passport) {
-    passport.authenticate('local', function(err, user, info) {
+function authenticateUser(req, res, next, kwargs) {
+    kwargs['string-format']();
 
-        // handle authentication error
+    kwargs['passport'].authenticate('local', function(err, user, info) {
         if (err) {
-            console.log('Authentication error: {}'.format(info.message));
-
-            return;
+            return console.log('Authentication error: {}'.format(info.message || err));
         }
 
         req.login(user, function(err) {
-            
+            if (err) {
+                return console.log('Authentication error: {}'.format(info.message || err));
+            }
+
             // handle authentication success 
             if (req.isAuthenticated()) {
                 console.log('Authentication sucess: {}'.format(info.message));
 
-                // send success response
+                // send json success response (null error message)
                 res.json({
                     'errorMessage': null
                 });
@@ -43,12 +40,13 @@ function authenticateUser(req, res, next, passport) {
 
 // define middleware exports to main
 module.exports.middleware = function(app, kwargs) {
+    kwargs['string-format']();
 
     // GET for login: #/login
     app.get('/login', (req, res, next) => {
         console.log('GET Request @ /login');
 
-        res.sendFile(path.resolve(__dirname + './../../popper/login/login.html'));
+        res.sendFile(kwargs['path'].resolve(__dirname + './../../popper/login/login.html'));
     });
 
     // POST for loging in user: #/login/db
@@ -69,7 +67,7 @@ module.exports.middleware = function(app, kwargs) {
         }
 
         // authenitcate logged-in user
-        authenticateUser(req, res, next, kwargs['passport']);
+        authenticateUser(req, res, next, kwargs);
     });
 
     // POST for registering user: #/register/db
@@ -122,21 +120,41 @@ module.exports.middleware = function(app, kwargs) {
             return;
         }
 
-        // register user
-        await kwargs['mongoUtil'].User().insertOne({
-            'email': email,
-            'username': username,
-            'password': password
-        }, 
-        function(err) {
+        /* -- HASH PASSWORD -- */
+        
+        // set salt rounds to constant (hash cost = 2^rounds)
+        const saltRounds = process.env['SALT_ROUNDS_{}'.format(process.env.STATE)];
+        var passwordHash = null;
+
+        // generate hash salt with saltRounds
+        kwargs['bcrypt'].genSalt(saltRounds, function(err, salt) {
             if (err) {
                 return console.log('Registration error: {}'.format(err));
             }
 
-            console.log('Registration Success: \"{}\"'.format(username));
-        });
+            // hash plaintext password with salt
+            kwargs['bcrypt'].hash(password, salt, null, async function(err, hash) {
+                if (err) {
+                    return console.log('Registration error: {}'.format(err));
+                }
 
-        // authenticate registered user
-        authenticateUser(req, res, next, kwargs['passport']);
+                // register user
+                await kwargs['mongoUtil'].User().insertOne({
+                    'email': email,
+                    'username': username,
+                    'password': hash
+                }, 
+                function(err) {
+                    if (err) {
+                        return console.log('Registration error: {}'.format(err));
+                    }
+
+                    console.log('Registration Success: \"{}\"'.format(username));
+                });
+
+                // authenticate registered user
+                authenticateUser(req, res, next, kwargs);
+            });
+        });
     });
 }

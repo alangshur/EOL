@@ -1,5 +1,5 @@
 // init npm modules
-var fs = require('fs');
+const fs = require('fs');
 require('string-format').extend(String.prototype, {});
 
 // asynchronously fetch middleware functions from every feature

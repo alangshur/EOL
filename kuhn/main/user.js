@@ -5,6 +5,7 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
     var LocalStrategy = require('passport-local').Strategy;
     var uuid = require('uuid');
     var crypto = require('crypto');
+    var bcrypt = require('bcrypt-nodejs');
     var session = require('express-session');
     var MongoStore = require('connect-mongo')(session);
     var ObjectID = require('mongodb').ObjectID;
@@ -36,23 +37,28 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
             var user = await mongoUtil.User().findOne({ username: username });
         }
         catch (err) {
-            return done(err, false, { message: 'Error authenticating user {}'.format(err) });
+            return done(err, false, { message: 'Error authenticating user: {}'.format(err) });
         }
 
         // check if db query returned user
         if (!user) {
-            return done(null, false, { message: 'Username is not registered' });
+            return done(null, false, { message: 'Invalid username or password' });
         }
 
         // validate user if not null
         else {
 
-            // check for correct password
-            if (user.password != password) {
-                return done(null, false, { message: 'Password does not match username' });
-            }
+            // compare bcrypt hash of entered password with stored password hash
+            if (bcrypt.compare(password, user.password, function(err, res) {
+                if (err) {
+                    return done(err, false, { message: 'Error authenticating user: {}'.format(err) }); 
+                }
+                else if (!res) {
+                    return done(null, false, { message: 'Invalid username or password' });
+                }
 
-            return done(null, user, { message: 'User \"{}\" successfully authenticated'.format(username) });
+                return done(null, user, { message: 'User \"{}\" successfully authenticated'.format(username) });
+            }));
         }
     }));
 
