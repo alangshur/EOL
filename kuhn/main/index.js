@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const path = require('path');
-const request = require('request');
 const bcrypt = require('bcrypt-nodejs');
 require('string-format').extend(String.prototype, {});
 

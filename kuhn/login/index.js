@@ -6,16 +6,9 @@ function authenticateUser(req, res, next, kwargs) {
     kwargs['string-format']();
 
     kwargs['passport'].authenticate('local', function(err, user, info) {
-        if (err) {
-            return console.log('Authentication error: {}'.format(info.message || err));
-        }
-
         req.login(user, function(err) {
-            if (err) {
-                return console.log('Authentication error: {}'.format(info.message || err));
-            }
 
-            // handle authentication success 
+            // handle authentication success
             if (req.isAuthenticated()) {
                 console.log('Authentication sucess: {}'.format(info.message));
 
