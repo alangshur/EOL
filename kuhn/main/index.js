@@ -5,6 +5,9 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const path = require('path');
 const bcrypt = require('bcrypt-nodejs');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
 require('string-format').extend(String.prototype, {});
 
 // init express app with environment variables
@@ -60,6 +63,25 @@ mongoUtil.connect(databaseName, function() {
 // connect to EOL instance on PORT
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log('EOL {} instance running on port {}'.format(process.env.STATE, PORT));
-});
+// get https private key and certificate 
+const privateKey = fs.readFileSync(path.join(__dirname, process.env.PRIVATE_KEY_ROUTE), 'utf8');
+const certificate = fs.readFileSync(path.join(__dirname, process.env.CERTIFICATE_ROUTE), 'utf8');
+
+if (process.env.PROTOCOL == 'HTTP') {
+
+    // run http server 
+    http.createServer(app).listen(PORT, () => {
+        console.log('EOL {} instance (HTTP) running on port {}'.format(process.env.STATE, PORT));
+    });
+}
+else if (process.env.PROTOCOL == 'HTTPs') {
+    
+    // run https server
+    https.createServer({
+        key: privateKey, 
+        cert: certificate,
+        passphrase: process.env.PEM_PASS_PHRASE
+    }, app).listen(PORT, () => {
+        console.log('EOL {} instance (HTTPS) running on port {}'.format(process.env.STATE, PORT));
+    });
+}

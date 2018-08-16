@@ -29,6 +29,8 @@
     "express-session": "^1.15.6",
     "fs": "0.0.1-security",
     "helmet": "^3.13.0",
+    "http": "0.0.0",
+    "https": "^1.0.0",
     "jquery": "^3.3.1",
     "mongodb": "^3.1.0",
     "passport": "^0.4.0",

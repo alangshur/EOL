@@ -1,1 +1,1 @@
-# Config Elements:
+# Config Structure:
