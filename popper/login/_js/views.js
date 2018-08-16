@@ -3,7 +3,7 @@ define([
     'jquery-wrapper',
     'underscore',
     'format'
-], function(Backbone, $, _, __format__) {
+], function(Backbone, $, _, __format) {
     var app = {};
     
     // define main login view

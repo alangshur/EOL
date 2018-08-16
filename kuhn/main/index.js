@@ -49,6 +49,7 @@ mongoUtil.connect(databaseName, function() {
 
      // base GET: #/
      app.get('/', (req, res, next) => {     
+        console.log('GET Request @ /')
 
         // redirect user to home if authenticated and login if otherwise
         if (req.isAuthenticated()) {
@@ -74,8 +75,8 @@ if (process.env.PROTOCOL == 'HTTP') {
         console.log('EOL {} instance (HTTP) running on port {}'.format(process.env.STATE, PORT));
     });
 }
-else if (process.env.PROTOCOL == 'HTTPs') {
-    
+else if (process.env.PROTOCOL == 'HTTPS') {
+
     // run https server
     https.createServer({
         key: privateKey, 

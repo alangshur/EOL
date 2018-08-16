@@ -1,10 +1,10 @@
 // define middleware exports to main
-module.exports.middleware = function(app) {
+module.exports.middleware = function(app, kwargs) {
 
     // GET for main: #/main
     app.get('/home', (req, res) => {
-        console.log('GET Request @ /main');
+        console.log('GET Request @ /home');
 
-        res.send('EOL Main');
+        res.sendFile(kwargs['path'].resolve(__dirname + './../../popper/home/home.html'));
     });
 }

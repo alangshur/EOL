@@ -1,9 +1,10 @@
 // configure all requirejs modules
 (function() {
-    var customModuleUrl = '../main/modules/'
+    var customModuleUrl = '../main/modules/';
 
     // feature urls
-    var loginUrl = '../login/_js/'
+    var loginUrl = '../login/_js/';
+    var homeUrl = '../home/_js/'
 
     require.config({
         baseUrl: './../lib',
@@ -17,6 +18,9 @@
             // configure custom modules
             'format': customModuleUrl + 'format',
             'jquery-wrapper': customModuleUrl + 'jquery-plugins',
+
+            // configure home modules
+            'homeviews': homeUrl + 'views',
 
             // configure login modules
             'loginviews': loginUrl + 'views'
