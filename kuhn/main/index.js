@@ -43,6 +43,18 @@ mongoUtil.connect(databaseName, function() {
             require('string-format').extend(String.prototype, {});
         }
     });
+
+     // base GET: #/
+     app.get('/', (req, res, next) => {     
+
+        // redirect user to home if authenticated and login if otherwise
+        if (req.isAuthenticated()) {
+            res.redirect('/home');
+        }
+        else {
+            res.redirect('/login');
+        }
+    });
 });
 
 // connect to EOL instance on PORT

@@ -9,7 +9,13 @@ module.exports.middleware = function(app, kwargs) {
     app.get('/login', (req, res, next) => {
         console.log('GET Request @ /login');
 
-        res.sendFile(kwargs['path'].resolve(__dirname + './../../popper/login/login.html'));
+        // redirect user to home if authenticated and send login html if otherwise
+        if (req.isAuthenticated()) {
+            res.redirect('/home');
+        }
+        else {
+            res.sendFile(kwargs['path'].resolve(__dirname + './../../popper/login/login.html'));
+        }
     });
 
     // POST for loging in user: #/login/db
