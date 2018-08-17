@@ -25,6 +25,22 @@ define([
 
         // render view upon initialization
         initialize: function() {
+            $('#loading-gif').hide();
+
+            // handle loading icon
+            $(document).ajaxStart(function() {
+                $('#login-block').addClass('blur');
+
+                setTimeout(function() {
+                    $('#loading-gif').show();
+                }, 100);
+            });
+
+            $(document).ajaxStop(function() {
+                $('#loading-gif').hide();
+                $('#login-block').removeClass('blur');
+            });
+
             this.loadLoginTemplate();            
         },
 

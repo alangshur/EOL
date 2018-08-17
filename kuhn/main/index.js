@@ -36,19 +36,21 @@ mongoUtil.connect(databaseName, function() {
     // setup user and import passport configuration
     const passport = require('./user.js')(app, sessionSecret, databaseName, mongoUtil);
 
-    // import middleware from all features (pass necessary modules)
-    require('./routes.js').middlewareFunctions(app, {
-        'passport': passport,
-        'mongoUtil': mongoUtil,
-        'path': path,
-        'bcrypt': bcrypt,
-        'string-format': () => {
-            require('string-format').extend(String.prototype, {});
+    // check authentication on GET
+    app.all('/*', (req, res, next) => {  
+
+        // ignore redirect if user is authenticated or login route
+        if (req.isAuthenticated() || (req.path == '/login/' || req.path == '/login/db' || req.path == '/register/db')) {
+            next();
+            return;
+        }
+        else {
+            res.redirect('/login');
         }
     });
 
-     // base GET: #/
-     app.get('/', (req, res, next) => {     
+    // base GET: #/
+    app.get('/', (req, res) => {     
         console.log('GET Request @ /')
 
         // redirect user to home if authenticated and login if otherwise
@@ -59,23 +61,35 @@ mongoUtil.connect(databaseName, function() {
             res.redirect('/login');
         }
     });
+
+    // import middleware from all features (pass necessary modules)
+    require('./routes.js').middlewareFunctions(app, {
+        'passport': passport,
+        'mongoUtil': mongoUtil,
+        'path': path,
+        'bcrypt': bcrypt,
+        'string-format': () => {
+            require('string-format').extend(String.prototype, {});
+        }
+    });
 });
 
 // connect to EOL instance on PORT
 const PORT = process.env.PORT || 3000;
 
-// get https private key and certificate 
-const privateKey = fs.readFileSync(path.join(__dirname, process.env.PRIVATE_KEY_ROUTE), 'utf8');
-const certificate = fs.readFileSync(path.join(__dirname, process.env.CERTIFICATE_ROUTE), 'utf8');
-
+// run http server 
 if (process.env.PROTOCOL == 'HTTP') {
-
-    // run http server 
     http.createServer(app).listen(PORT, () => {
         console.log('EOL {} instance (HTTP) running on port {}'.format(process.env.STATE, PORT));
     });
 }
-else if (process.env.PROTOCOL == 'HTTPS') {
+
+// run https dev server (self-signed CA)
+else if (process.env.PROTOCOL == 'HTTPS' && state == 'DEV') {
+    
+    // get https private key and certificate 
+    const privateKey = fs.readFileSync(path.join(__dirname, process.env.PRIVATE_KEY_ROUTE), 'utf8');
+    const certificate = fs.readFileSync(path.join(__dirname, process.env.CERTIFICATE_ROUTE), 'utf8');
 
     // run https server
     https.createServer({
