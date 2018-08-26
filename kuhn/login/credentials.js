@@ -1,10 +1,13 @@
-// define credentials export
+/* CREDENTIALS UTILITY (EXPORTED AS FUNCTION) */
+
+// init npm modules
+require('string-format').extend(String.prototype, {});
+
+// export credentials functions
 module.exports = {
 
     // authenticate req user for login and regestration
     authenticateUser: function(req, res, next, kwargs) {
-        kwargs['string-format']();
-
         kwargs['passport'].authenticate('local', function(err, user, info) {
             req.login(user, function(err) {
 

@@ -1,13 +1,15 @@
+/* DB UTILITY (EXPORTED AS OBJECT) */
+
 // init npm modules
 const MongoClient = require('mongodb').MongoClient;
 require('string-format').extend(String.prototype, {});
 
-// persist mongo database variable
+// persist db instance
 var _db;
 var isConnected = false;
 
-// define mongo utility export
-module.exports.mongoUtil = {
+// export db utility
+module.exports = {
 
     // connect to specified db with callback
     connect: function(databaseName, callback) {
@@ -38,7 +40,7 @@ module.exports.mongoUtil = {
     // format specified db URI
     formatURI: function(databaseName) {
         if (databaseName == 'eol_db_prod') {
-            // TODO: Implement for PROD DB
+            // TODO: implement for prod db
         }
         else if (databaseName == 'eol_db') {
             return 'mongodb://{}:{}@{}/{}'.format(process.env.DATABASE_USERNAME_DEV, process.env.DATABASE_PASSWORD_DEV, 

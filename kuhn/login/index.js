@@ -1,10 +1,16 @@
-// init credentials module
+/* LOGIN INDEX */
+
+// init npm modules
+const path = require('path');
+const bcrypt = require('bcrypt-nodejs');
+require('string-format').extend(String.prototype, {});
+
+// init credentials utility
 const credentials = require('./credentials.js');
 
 // define middleware exports to main
-module.exports.middleware = function(app, kwargs) {
-    kwargs['string-format']();
-
+module.exports = function(app, kwargs) {
+    
     // GET for login: #/login
     app.get('/login', (req, res, next) => {
         console.log('GET Request @ /login');
@@ -14,11 +20,11 @@ module.exports.middleware = function(app, kwargs) {
             res.redirect('/home');
         }
         else {
-            res.sendFile(kwargs['path'].resolve(__dirname + './../../popper/login/login.html'));
+            res.sendFile(path.resolve(__dirname + './../../popper/login/login.html'));
         }
     });
 
-    // POST for loging in user: #/login/db
+    // POST for logging in user: #/login/db
     app.post('/login/db', (req, res, next) => {
         console.log('POST Request @ /login/db');
 
@@ -26,7 +32,7 @@ module.exports.middleware = function(app, kwargs) {
         var password = req.body.password;
         var errorMessage = credentials.validateLogin(username, password);
 
-        // login if errorMessage is null
+        // login if errorMessage is not null
         if (errorMessage) {
             res.json({
                 'errorMessage': errorMessage
@@ -94,13 +100,13 @@ module.exports.middleware = function(app, kwargs) {
         var passwordHash = null;
 
         // generate hash salt with saltRounds
-        kwargs['bcrypt'].genSalt(saltRounds, function(err, salt) {
+        bcrypt.genSalt(saltRounds, function(err, salt) {
             if (err) {
                 return console.log('Registration error: {}'.format(err));
             }
 
             // hash plaintext password with salt
-            kwargs['bcrypt'].hash(password, salt, null, async function(err, hash) {
+            bcrypt.hash(password, salt, null, async function(err, hash) {
                 if (err) {
                     return console.log('Registration error: {}'.format(err));
                 }

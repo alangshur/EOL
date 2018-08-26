@@ -1,15 +1,18 @@
-module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
-    
-    // init npm modules
-    var passport = require('passport');
-    var LocalStrategy = require('passport-local').Strategy;
-    var uuid = require('uuid');
-    var crypto = require('crypto');
-    var bcrypt = require('bcrypt-nodejs');
-    var session = require('express-session');
-    var MongoStore = require('connect-mongo')(session);
-    var ObjectID = require('mongodb').ObjectID;
+/* USER UTILITY (EXPORTED AS FUNCTION) */
 
+// init npm modules
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var uuid = require('uuid');
+var crypto = require('crypto');
+var bcrypt = require('bcrypt-nodejs');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+var ObjectID = require('mongodb').ObjectID;
+
+// export user utility
+module.exports = function(app, kwargs) {
+    
     // configure user session middleware
     app.use(session({
         genid: (req) => {
@@ -20,10 +23,10 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
         },
 
         // get specified session secret
-        secret: sessionSecret,
+        secret: kwargs['sessionSecret'],
 
         // persist sessions past cookies and memory cache
-        store: new MongoStore({ url: mongoUtil.formatURI(databaseName) }),
+        store: new MongoStore({ url: kwargs['mongoUtil'].formatURI(kwargs['databaseName']) }),
         resave: false,
         saveUninitialized: true
     }));
@@ -32,9 +35,10 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
     app.use(passport.initialize());
     app.use(passport.session());
 
+    // configure passport authentication strategy
     passport.use(new LocalStrategy(async function(username, password, done) {  
         try {
-            var user = await mongoUtil.User().findOne({ username: username });
+            var user = await kwargs['mongoUtil'].User().findOne({ username: username });
         }
         catch (err) {
             return done(err, false, { message: 'Error authenticating user: {}'.format(err) });
@@ -62,13 +66,15 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
         }
     }));
 
+    // configure passport authentication serialization
     passport.serializeUser(function(user, done) {
         done(null, user._id);
     });
 
+    // configure passport authentication deserialization
     passport.deserializeUser(async function(id, done) {
         try {
-            var user = await mongoUtil.User().findOne({ _id: new ObjectID(id) });
+            var user = await kwargs['mongoUtil'].User().findOne({ _id: new ObjectID(id) });
         }
         catch (err) {
             console.log('Error deserializing user: {}'.format(err));
@@ -78,9 +84,8 @@ module.exports = function(app, sessionSecret, databaseName, mongoUtil) {
         if (!user) {
             return done(null, false);
         }
-        else {
-            return done(null, user);
-        }
+        
+        return done(null, user);
     });
 
     return passport;

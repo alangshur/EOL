@@ -1,3 +1,5 @@
+/* JQUERY PLUGINS MODULE */
+
 define(['jquery-main'], function($) {
 
     // PLUGIN - jQuery outerHTML function

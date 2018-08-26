@@ -1,9 +1,13 @@
+/* BOOTSTRAP UTILITY (EXPORTED AS FUNCTION) */
+
 // init npm modules
 const fs = require('fs');
 require('string-format').extend(String.prototype, {});
 
-// asynchronously fetch middleware functions from every feature
-module.exports.middlewareFunctions = function(app, kwargs) {
+// export boostrap utility
+module.exports = function(app, kwargs) {
+
+    // asynchronously fetch middleware functions from every feature
     fs.readdir('{}/..'.format(__dirname), function(err, files) {
         if (err) {
             console.log('Error loading {}: {}'.format(featdir, err));
@@ -21,8 +25,9 @@ module.exports.middlewareFunctions = function(app, kwargs) {
                 files.forEach(function(file) {
                     if (file != 'index.js') return;
 
+                    // load middleware functions from feature index
                     try {
-                        require('../{}/index.js'.format(featdir)).middleware(app, kwargs);
+                        require('../{}/index.js'.format(featdir))(app, kwargs);
                         console.log('Loaded middleware functions from {}/index.js'.format(featdir));
                     }
                     catch (err) {

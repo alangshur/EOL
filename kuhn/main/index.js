@@ -1,10 +1,11 @@
+/* MAIN INDEX */
+
 // init npm modules
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const path = require('path');
-const bcrypt = require('bcrypt-nodejs');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -14,11 +15,12 @@ require('string-format').extend(String.prototype, {});
 app = express();
 require('dotenv').config();
 
-// init mongo database utility
-const mongoUtil = require('./db.js').mongoUtil;
+// init db utility
+const mongoUtil = require('./db.js');
 
 // configure universal middleware constants
 const state = process.env.STATE;
+const protocol = process.env.PROTOCOL;
 const sessionSecret = process.env['SESSION_SECRET_{}'.format(state)];
 const databaseName = process.env['DATABASE_NAME_{}'.format(state)];
 
@@ -33,18 +35,23 @@ app.use(helmet());
 mongoUtil.connect(databaseName, function() {
     console.log('Mongo DB ({}) database connected'.format(state));
 
-    // setup user and import passport configuration
-    const passport = require('./user.js')(app, sessionSecret, databaseName, mongoUtil);
+    // init user utility (with kwargs)
+    const passport = require('./user.js')(app, {
+        'sessionSecret': sessionSecret,
+        'databaseName': databaseName,
+        'mongoUtil': mongoUtil
+    });
 
-    // check authentication on GET
+    // handle authentication on all routes
     app.all('/*', (req, res, next) => {  
-
-        // ignore redirect if user is authenticated or login route
-        if (req.isAuthenticated() || (req.path == '/login/' || req.path == '/login/db' || req.path == '/register/db')) {
+        const unauthenticatedRoutes = new Set(['/login/', '/login/db', '/register/db']);
+        
+        if (req.isAuthenticated() || unauthenticatedRoutes.has(req.path)) {
             next();
             return;
         }
         else {
+            console.log('Redirected unauthenticated user to login');
             res.redirect('/login');
         }
     });
@@ -62,15 +69,10 @@ mongoUtil.connect(databaseName, function() {
         }
     });
 
-    // import middleware from all features (pass necessary modules)
-    require('./routes.js').middlewareFunctions(app, {
+    // init boostrap utility (with kwargs)
+    require('./bootstrap.js')(app, {
         'passport': passport,
-        'mongoUtil': mongoUtil,
-        'path': path,
-        'bcrypt': bcrypt,
-        'string-format': () => {
-            require('string-format').extend(String.prototype, {});
-        }
+        'mongoUtil': mongoUtil
     });
 });
 
@@ -78,14 +80,14 @@ mongoUtil.connect(databaseName, function() {
 const PORT = process.env.PORT || 3000;
 
 // run http server 
-if (process.env.PROTOCOL == 'HTTP') {
+if (protocol == 'HTTP') {
     http.createServer(app).listen(PORT, () => {
         console.log('EOL {} instance (HTTP) running on port {}'.format(process.env.STATE, PORT));
     });
 }
-
+ 
 // run https dev server (self-signed CA)
-else if (process.env.PROTOCOL == 'HTTPS' && state == 'DEV') {
+else if (protocol == 'HTTPS' && state == 'DEV') {
     
     // get https private key and certificate 
     const privateKey = fs.readFileSync(path.join(__dirname, process.env.PRIVATE_KEY_ROUTE), 'utf8');
@@ -99,4 +101,9 @@ else if (process.env.PROTOCOL == 'HTTPS' && state == 'DEV') {
     }, app).listen(PORT, () => {
         console.log('EOL {} instance (HTTPS) running on port {}'.format(process.env.STATE, PORT));
     });
+}
+
+// run https prod server
+else if (protocol == 'HTTPS' && state == 'PROD') {
+    // TODO: implement prod https server
 }
