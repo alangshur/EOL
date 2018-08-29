@@ -52,7 +52,7 @@ mongoUtil.connect(databaseName, function() {
         }
         else {
             console.log('Redirected unauthenticated user to login');
-            res.redirect('/login');
+            res.redirect('/login/');
         }
     });
 
@@ -60,13 +60,8 @@ mongoUtil.connect(databaseName, function() {
     app.get('/', (req, res) => {     
         console.log('GET Request @ /')
 
-        // redirect user to home if authenticated and login if otherwise
-        if (req.isAuthenticated()) {
-            res.redirect('/home');
-        }
-        else {
-            res.redirect('/login');
-        }
+        // redirect user to home
+        res.redirect('/home/');
     });
 
     // init boostrap utility (with kwargs)

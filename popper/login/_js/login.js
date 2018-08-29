@@ -1,6 +1,6 @@
 require([
     'loginviews',
-], function( loginviews) {
+], function(loginviews) {
     var app = {};
 
     // initialize main view

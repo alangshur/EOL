@@ -12,15 +12,24 @@ const credentials = require('./credentials.js');
 module.exports = function(app, kwargs) {
     
     // GET for login: #/login
-    app.get('/login', (req, res, next) => {
+    app.get('/login', (req, res) => {
         console.log('GET Request @ /login');
 
-        // redirect user to home if authenticated and send login html if otherwise
+        // redirect user to home if authenticated or send login html
         if (req.isAuthenticated()) {
-            res.redirect('/home');
+            console.log('Redirected authenticated user to home');
+            res.redirect('/home/');
+            return;
         }
         else {
-            res.sendFile(path.resolve(__dirname + './../../popper/login/login.html'));
+            res.sendFile(path.resolve(__dirname + './../../popper/login/login.html'), function(err) {
+                if (err) {
+                    console.log('Error sending file: login.html');
+                    return;
+                }
+
+                console.log('Sent file: login.html');
+            });
         }
     });
 

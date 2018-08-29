@@ -10,6 +10,13 @@ module.exports = function(app, kwargs) {
     app.get('/home', (req, res) => {
         console.log('GET Request @ /home');
 
-        res.sendFile(path.resolve(__dirname + './../../popper/home/home.html'));
+        res.sendFile(path.resolve(__dirname + './../../popper/home/home.html'), function(err) {
+            if (err) {
+                console.log('Error sending file: home.html');
+                return;
+            }
+
+            console.log('Sent file: home.html');
+        });
     });
 }

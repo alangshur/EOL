@@ -7,15 +7,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!-- stylesheets -->
+        <link href="./_css/home.css" rel="stylesheet" type="text/css"> 
+        <link href="./_css/map.css" rel="stylesheet" type="text/css"> 
     </head>
     <body>
-        <h1>EOL Home</h1>
+        <div id='map'></div>
 
         <!-- load requirejs with main/main -->
         <script type='application/javascript' src="./../lib/require-min.js"></script>
         <script type='application/javascript' src="./../main/config.js"></script>
 
         <!-- load feature javascript files -->
-        <script type='application/javascript' src="./_js/home.js" async></script>
+        <script type='application/javascript' src="./_js/home.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDU6GLUtVJH1YBM8bKGh_jcg98wUu7Xri4&callback=initMap" async defer></script>
     </body>
 </html>
