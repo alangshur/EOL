@@ -2,7 +2,7 @@ var map;
 
 function initMap() {
 
-    // initialize map
+    // init map
     map = new google.maps.Map(document.getElementById('map'), {
 
         // configure initial viewport
@@ -11,6 +11,7 @@ function initMap() {
 
         // configure max viewport zoom
         minZoom: 12,
+        maxZoom: 18,
         
         // configure ui controls
         disableDefaultUI: true,
@@ -178,14 +179,6 @@ function initMap() {
                ]
             },
             {  
-               "featureType": "transit.station",
-               "stylers": [  
-                    {  
-                        "visibility": "on"
-                    }
-               ]
-            },
-            {  
                "featureType": "water",
                "stylers": [  
                     {  
@@ -213,12 +206,12 @@ function initMap() {
 
     // load js after map
     require([
-        'homeviews',
-    ], function(homeviews) {
+        'home-views',
+    ], function(homeViews) {
         var app = {};
     
-        // initialize map view
-        app.mapView = new homeviews.MapView({
+        // init map view
+        app.mapView = new homeViews.MapView({
             mapObject: map
         });
     

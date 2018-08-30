@@ -20,10 +20,11 @@
             'jquery-wrapper': customModuleUrl + 'jquery-plugins',
 
             // configure home modules
-            'homeviews': homeUrl + 'views',
+            'home-views': homeUrl + 'views',
+            'home-models': homeUrl + 'models',
 
             // configure login modules
-            'loginviews': loginUrl + 'views'
+            'login-views': loginUrl + 'views'
         },
         shim: {
 

@@ -64,5 +64,13 @@ module.exports = {
         else {
             console.log("Cannot get collection: 'sessions'")
         }
+    },
+    Spot: function() {
+        if (_db) {
+            return _db.collection('spots');
+        }
+        else {
+            console.log("Cannot get collection: 'spots'")
+        }
     }
 }
