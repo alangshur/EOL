@@ -14,6 +14,7 @@
             'backbone': 'backbone-min',
             'jquery-main': 'jquery-min',
             'underscore': 'underscore-min',
+            'spot-clusterer': 'marker-clusterer',
 
             // configure custom modules
             'format': customModuleUrl + 'format',
@@ -38,6 +39,9 @@
             },
             'underscore': {
                 exports: '_'
+            },
+            'spot-clusterer': {
+                exports: 'spotClusterer'
             },
 
             // shim custom modules

@@ -3,15 +3,18 @@ var map;
 function initMap() {
 
     // init map
-    map = new google.maps.Map(document.getElementById('map'), {
+    var map = new google.maps.Map(document.getElementById('map'), {
 
         // configure initial viewport
         center: {lat: 41.957280, lng: -87.666540},
         zoom: 15,
 
+        // set cursor type
+        draggableCursor: 'default',
+
         // configure max viewport zoom
-        minZoom: 12,
-        maxZoom: 18,
+        minZoom: 11,
+        maxZoom: 19,
         
         // configure ui controls
         disableDefaultUI: true,
@@ -206,15 +209,15 @@ function initMap() {
 
     // load js after map
     require([
-        'home-views',
+        'home-views'
     ], function(homeViews) {
         var app = {};
-    
+
         // init map view
         app.mapView = new homeViews.MapView({
             mapObject: map
         });
-    
+
         return app;
     });
 }

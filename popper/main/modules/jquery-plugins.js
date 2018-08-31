@@ -78,7 +78,7 @@ define(['jquery-main'], function($) {
     // PLUGIN - uid generator
     $.fn.extend({
         uid: function() {
-            return 'uid-' + Math.random().toString(36).substr(2, 16);
+            return Math.random().toString(36).substr(2, 16);
         }
     });
 

@@ -106,7 +106,6 @@ module.exports = function(app, kwargs) {
         
         // set salt rounds to constant (hash cost = 2^rounds)
         const saltRounds = process.env['SALT_ROUNDS_{}'.format(process.env.STATE)];
-        var passwordHash = null;
 
         // generate hash salt with saltRounds
         bcrypt.genSalt(saltRounds, function(err, salt) {

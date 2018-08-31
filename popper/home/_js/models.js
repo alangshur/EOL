@@ -8,8 +8,7 @@ define([
     // declare Spot model
     app.Spot = Backbone.Model.extend({
         spotId: null,
-        lat: null,
-        long: null
+        position: null
     });
 
     // declare SpotCollection collection

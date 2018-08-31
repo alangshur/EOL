@@ -43,13 +43,14 @@ module.exports = function(app, kwargs) {
     app.post('/spot', (req, res) => {
 
         // add spot to mongo collection
-        kwargs['mongoUtil'].Spot().insertOne(req.body, function(err, res) {
+        kwargs['mongoUtil'].Spot().insertOne(req.body, function(err) {
             if (err) {
                 console.log('Error posting spot to db: {}'.format(err));
                 return;
             }
 
             console.log('Successfully posted spot {} to db'.format(req.body.spotId));
+            res.end();
         });
     });
 }
