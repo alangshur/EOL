@@ -8,6 +8,7 @@ define([
 ], function(Backbone, $, _, __spotClusterer, __format, homeModels) {
     var app = {};
 
+    // map view
     app.MapView = Backbone.View.extend({
         el: $('#map'),
 
@@ -18,6 +19,9 @@ define([
             // set map object on view
             this.mapObj = options.mapObject;
 
+            // initialize info window view
+            this.infoWindowView = null;
+
             // center view
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -26,14 +30,24 @@ define([
                         lng: position.coords.longitude
                     }
 
-                    self.mapObj.setCenter(pos);
+                    self.mapObj.panTo(pos);
                 });
             }
 
             // add spot on map click event
             this.mapObj.addListener('click', function(e) {
-                if (self.mapObj.getZoom() >= 16) {
-                    self.addSpot(e.latLng);
+
+                // close info window if not null
+                if (self.infoWindowView) {
+                    self.infoWindowView.closeInfoWindow();
+                    self.infoWindowView = null;
+                }
+
+                // add spot 
+                else {
+                    if (self.mapObj.getZoom() >= 14) {
+                        self.addSpot(e.latLng);
+                    }
                 }
             });
 
@@ -58,7 +72,7 @@ define([
                     var preloadedSpot = self.placeSpot({
                         spotId: spot.spotId,
                         position: spot.position
-                    }, spot.position, false);
+                    }, spot.position, true);
 
                     preloadedSpots.push(preloadedSpot);
                 }
@@ -66,7 +80,7 @@ define([
                 // set spot clustering strategy
                 self.spotClusterer = new MarkerClusterer(self.mapObj, preloadedSpots, {
                     imagePath: './../../assets/images/cluster-',
-                    maxZoom: 15
+                    maxZoom: 14
                 });
             });
         },
@@ -93,18 +107,18 @@ define([
             this.placeSpot({
                 spotId: id,
                 position: pos
-            }, pos, true)
+            }, pos, false)
         },
 
         // place spot on map
-        placeSpot: function(spotData, position, dropAnimation) {
+        placeSpot: function(spotData, position, initialLoad) {
             var self = this;
 
             // add spot to map
             var spot = new google.maps.Marker({
                 position: position,
                 map: this.mapObj,
-                animation: dropAnimation ? google.maps.Animation.DROP : null,
+                animation: initialLoad ? null : google.maps.Animation.DROP,
                 icon: {
                     url: './../../assets/images/marker.png',
                     scaledSize: new google.maps.Size(35, 35),
@@ -115,25 +129,84 @@ define([
             // set spot data
             spot.set('data', spotData);
 
-            // add spot to clusterer automatically if not initial load
-            if (dropAnimation) {
-                this.spotClusterer.addMarker(spot, true);
-            }
-
-            // add event listener to spot
+            // add event listener for spot click
             google.maps.event.addListener(spot, 'click', function() {
-                self.mapObj.panTo(spot.data.position);
-                self.mapObj.setZoom(15);
 
-                // open info window on spot
+                // move to spot
+                self.mapObj.panTo(spot.data.position);
+
+                if (self.mapObj.getZoom() != 15) {
+                    self.mapObj.setZoom(15);
+                }
+
+                // close info window if not null
+                if (self.infoWindowView) {
+                    self.infoWindowView.closeInfoWindow();
+                }
+
+                // create info window
+                self.infoWindowView = new app.InfoWindowView({
+                    mapObject: self.mapObj,
+                    spotObject: spot
+                });
             });
+
+            // carry out operations if not initial load
+            if (!initialLoad) {
+                this.spotClusterer.addMarker(spot, true);
+                google.maps.event.trigger(spot, 'click');
+            }
 
             return spot;
         }
     });
 
+    // info window wrapper view
     app.InfoWindowView = Backbone.View.extend({
+        initialize: function(options) {
 
+            // set map object on view
+            this.mapObj = options.mapObject;
+
+            // set spot object on view
+            this.spotObj = options.spotObject;
+
+            // initialize info window object
+            this.infoWindow = null;
+
+            this.createInfoWindow();
+        },
+
+        // create info window
+        createInfoWindow: function() {   
+
+            // format content string
+            var contentString = '' +
+                '<div id="content">'+
+                    '<div id="siteNotice">'+
+                    '</div>'+
+                    '<h1 id="firstHeading" class="firstHeading">Info</h1>'+
+                    '<div id="bodyContent">'+
+                    '<p>{}</p>'.format(this.spotObj.data.spotId) +
+                    '</div>'+
+                '</div>';
+
+            // buid info window
+            this.infoWindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 75
+            });
+
+            // open info window
+            this.infoWindow.open(this.mapObj, this.spotObj);
+        },
+
+        // close info window
+        closeInfoWindow: function() {
+            if (this.infoWindow) {
+                this.infoWindow.close();
+            }
+        }
     });
 
     return app;

@@ -25,7 +25,10 @@ function initMap() {
             {  
                "stylers": [  
                     {  
-                        "lightness": -5
+                        "saturation": 40
+                    },
+                    {
+                        "visibility": -5
                     },
                     {  
                         "visibility": "on"
