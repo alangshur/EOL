@@ -8,6 +8,21 @@ define([
 ], function(Backbone, $, _, __spotClusterer, __format, homeModels) {
     var app = {};
 
+    app.HomeView = Backbone.View.extend({
+        el: $('#home'),
+        
+        initialize: function(options) {
+
+            // set map object on view
+            this.mapObj = options.mapObject;
+
+            // init map view
+            this.mapView = new app.MapView({
+                mapObject: this.mapObj
+            });
+        }
+    });
+
     // map view
     app.MapView = Backbone.View.extend({
         el: $('#map'),
@@ -19,10 +34,10 @@ define([
             // set map object on view
             this.mapObj = options.mapObject;
 
-            // initialize info window view
+            // init info window view
             this.infoWindowView = null;
 
-            // center view
+            // center view on current location
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     var pos = {
@@ -171,7 +186,7 @@ define([
             // set spot object on view
             this.spotObj = options.spotObject;
 
-            // initialize info window object
+            // init info window object
             this.infoWindow = null;
 
             this.createInfoWindow();

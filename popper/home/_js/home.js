@@ -217,7 +217,7 @@ function initMap() {
         var app = {};
 
         // init map view
-        app.mapView = new homeViews.MapView({
+        app.homeView = new homeViews.HomeView({
             mapObject: map
         });
 
