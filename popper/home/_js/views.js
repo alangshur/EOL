@@ -289,16 +289,17 @@ define([
                 // close info window if not null
                 if (self.infoWindowView) {
                     self.infoWindowView.closeInfoWindow();
+                    self.infoWindowView = null;
                 }
 
                 // close spot window if not null
                 if (self.spotWindowView) {
                     self.spotWindowView.closeSpotWindow();
+                    self.spotWindowView = null;
                 }
 
                 // revert add spot mode if true
                 if (self.addSpotMode) {
-
                     self.mapObj.setOptions({
                         draggableCursor: 'default'
                     });
@@ -308,6 +309,7 @@ define([
 
                 // create info window
                 self.infoWindowView = new app.InfoWindowView({
+                    mapView: self,
                     mapObject: self.mapObj,
                     spotObject: spot
                 });
@@ -326,6 +328,8 @@ define([
                 
                 // create spot window
                 this.spotWindowView = new app.SpotWindowView({
+                    mapView: self,
+                    mapObject: self.mapObj,
                     spotObject: spot
                 });
             }
@@ -339,6 +343,9 @@ define([
 
         // prepare info window data
         initialize: function(options) {
+
+            // set map view on view 
+            this.mapView = options.mapView;
 
             // set map object on view
             this.mapObj = options.mapObject;
@@ -372,20 +379,35 @@ define([
                 // format content string
                 var contentString = '' +
                     '<div id="content">' +
-                        '<div id="siteNotice">' +
-                        '</div>' +
-                        '<h1 id="firstHeading" class="firstHeading">Info</h1>' +
-                        '<div id="bodyContent">' +
+                        '<h1 id="iw-header">Info</h1>' +
+                        '<div id="iw-body">' +
                             '<p><b>Description:</b> {}</p>'.format(self.spotData.description) +
                         '</div>' +
-                        '<button>See More</button>' +
+                        '<button id="iw-button">View Spot</button>' +
                     '</div>';
 
                 // buid info window
                 self.infoWindow = new google.maps.InfoWindow({
                     content: contentString,
                     pixelOffset: new google.maps.Size(-1, -5),
-                    maxWidth: 275
+                    maxWidth: 210
+                });
+
+                // add button functionality on 'domready' event
+                google.maps.event.addListenerOnce(self.infoWindow, 'domready', function() {
+                    $('#iw-button').on('click', function() {
+
+                        // close info window
+                        self.closeInfoWindow();
+                        self.mapView.infoWindowView = null;
+
+                        // open spot window
+                        self.mapView.spotWindowView = new app.SpotWindowView({
+                            mapView: self.mapView,
+                            mapObject: self.mapObj,
+                            spotObject: self.spotObj
+                        });
+                    });
                 });
 
                 // open info window
@@ -408,6 +430,12 @@ define([
         // prepare spot window data
         initialize: function(options) {
             var self = this;
+
+            // set map view on view 
+            this.mapView = options.mapView;
+
+            // set map object on view
+            this.mapObj = options.mapObject;
 
             // set spot object on view
             this.spotObj = options.spotObject;

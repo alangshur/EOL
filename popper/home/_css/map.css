@@ -11,3 +11,21 @@ html, body {
 #map {
     height: 100%;
 }
+
+#iw-header {
+    width: 210px;
+    font-size: 17px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#iw-button {
+    position: relative;
+    height: 22px;
+    width: 85px;
+    left: 74px;
+    margin-top: 6px;
+    border-radius: 1px;
+    outline: 0;
+}
