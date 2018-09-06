@@ -18,7 +18,6 @@ function initMap() {
         
         // configure ui controls
         disableDefaultUI: true,
-        zoomControl: true,
 
         // configure map styling
         styles: [  

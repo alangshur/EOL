@@ -3,9 +3,9 @@
 #profile-icon {
     position: absolute;
     z-index: 99;
-    width: 40px;
-    top: 27px;
-    right: 35px;
+    width: 45px;
+    top: 24px;
+    right: 37px;
 }
 
 #search-wrapper {
@@ -16,11 +16,62 @@
     transform: translate(-50%, -50%);
 }
 
-
 #search-bar {
-    height: 30px;
-    width: 350px;
+    /* positioning */
+    z-index: 99;
+    height: 35px;
+    width: 400px;
+    padding-left: 12px;
+    margin-left: 0px;
+
+    /* styling */
+    border: 1.5px solid #000000;
+    border-radius: 3px;
     outline-width: 0;
     font-size: 16px;
-    padding-left: 7px;
+    transition: 1s;
+}
+
+#zoom-in {
+    /* positioning */
+    position: absolute;
+    z-index: 99;
+    width: 34px;
+    padding: 5.5px;
+    bottom: 100px;
+    right: 35px;
+
+    /* styling */
+    border: 2px solid #000000;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#zoom-out {
+    /* positioning */
+    position: absolute;
+    z-index: 99;
+    width: 37px;
+    padding: 4px;
+    right: 35px;
+    bottom: 44px;
+
+    /* styling */
+    border: 2px solid #000000;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#spot-window {
+    /* positioning */
+    position: absolute;
+    z-index: 99;
+    height: 100%;
+    width: 345px;
+    top: 0;
+    left: -345px;
+
+    /* styling */
+    background-color: #ffffff;
+    transition: 1s;
 }

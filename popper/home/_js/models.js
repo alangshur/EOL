@@ -18,5 +18,11 @@ define([
         url: '/spot'
     });
 
+    // declare SearchCollection collection
+    app.SearchCollection = Backbone.Collection.extend({
+        model: app.Spot,
+        contentType: 'application/json',
+    });
+
     return app;
 });

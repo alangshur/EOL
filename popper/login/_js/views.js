@@ -184,9 +184,9 @@ define([
 
             var errorMessage = null;
 
-            // ajax GET request
+            // ajax POST request
             $.ajax({
-                type: "POST",
+                type: 'POST',
                 url: '/login/db',
                 data: {
                     username: _username,

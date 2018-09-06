@@ -35,7 +35,8 @@ module.exports = function(app, kwargs) {
             });
         }
         catch (err) {
-            return console.log('Error fetching spots from db: {}'.format(err));
+            console.log('Error fetching spots from db: {}'.format(err));
+            res.end();
         }
     });
 
@@ -43,14 +44,38 @@ module.exports = function(app, kwargs) {
     app.post('/spot', (req, res) => {
 
         // add spot to mongo collection
-        kwargs['mongoUtil'].Spot().insertOne(req.body, function(err) {
-            if (err) {
-                console.log('Error posting spot to db: {}'.format(err));
-                return;
-            }
+        try {
+            kwargs['mongoUtil'].Spot().insertOne(req.body, function(err) {
+                if (err) throw err;
+    
+                console.log('Successfully posted spot {} to db'.format(req.body.spotId));
+            });
+        }
+        catch (err) {
+            console.log('Error posting spot to db: {}'.format(err));
+        }
 
-            console.log('Successfully posted spot {} to db'.format(req.body.spotId));
+        res.end();
+    });
+
+    // POST for spot info: #/spot/info
+    app.post('/spot/info', (req, res) => {
+
+        // get spot data for specific spot
+        try {
+            kwargs['mongoUtil'].Spot().find({
+                spotId: req.body.spotId
+            }).toArray(function(err, result) {
+                if (err) throw err;
+
+                // send JSON response
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(result));
+            });
+        }
+        catch (err) {
+            console.log('Error fetching spot {} from db: {}'.format(req.body.spotId, err));
             res.end();
-        });
+        }
     });
 }
