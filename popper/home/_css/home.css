@@ -1,10 +1,20 @@
-/* IDS */
+/* CLASSES */
 
-#profile-icon {
+.top-icon {
     position: absolute;
     z-index: 99;
     width: 45px;
     top: 24px;
+    cursor: pointer;
+}
+
+/* IDS */
+
+#add-spot-icon {
+    left: 37px;
+}
+
+#profile-icon {
     right: 37px;
 }
 
@@ -69,9 +79,11 @@
     height: 100%;
     width: 345px;
     top: 0;
-    left: -345px;
+    left: -348px;
 
     /* styling */
     background-color: #ffffff;
     transition: 1s;
+    border-right: 1.5px solid;
+    border-radius: 10px;
 }

@@ -68,9 +68,22 @@ define(['jquery-main'], function($) {
     $.fn.extend({
         loadEnterListener: function() {
             $('input').keypress(function(e) { 
-                if (e.keyCode == 13 && ($(this).attr('name') == 'Password')) {
+
+                // add desired form names
+                if (e.keyCode == 13 && ($(this).attr('name') == 'Password' || $(this).attr('name') == 'Search Bar')) {
                     $(this).trigger('enter');
                 }
+            });
+        }
+    });
+
+    // PLUGIN - 'clicked' input data marker
+    $.fn.extend({
+        loadInputClickData: function() {
+            $('input').click(function() {
+
+                // add 'clicked: true' field to element data
+                $(this).data('clicked', true);
             });
         }
     });

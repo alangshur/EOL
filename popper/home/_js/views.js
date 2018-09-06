@@ -22,13 +22,72 @@ define([
             this.mapView = new app.MapView({
                 mapObject: this.mapObj
             });
-            
-            // add zoom functionality
+
+            // load jQuery plugins
+            $.fn.loadEnterListener();
+            $.fn.loadInputClickData();
+
+            // add custom zoom functionality
             $('#zoom-in').on('click', function() {
+
+                // revert add spot mode
+                if (self.mapView.addSpotMode) {
+                    self.revertAddSpotMode();
+                }
+
                 self.zoomMapIn();
             });
             $('#zoom-out').on('click', function() {
+
+                // revert add spot mode
+                if (self.mapView.addSpotMode) {
+                    self.revertAddSpotMode();
+                }
+
                 self.zoomMapOut();
+            });
+            
+            // setup add spot event
+            $('#add-spot-icon').on('click', function() {
+                if (self.mapView.addSpotMode) {
+                    self.revertAddSpotMode();
+                }
+                else {
+                    self.mapObj.setOptions({
+                        draggableCursor: 'copy'
+                    });
+
+                    self.mapView.addSpotMode = true;
+                }
+            });
+
+            // setup profile event
+            $('#profile-icon').on('click', function() {
+
+                // revert add spot mode
+                if (self.mapView.addSpotMode) {
+                    self.revertAddSpotMode();
+                }
+            });
+
+            // setup search bar 'click' event
+            $('#search-bar').on('click', function() {
+            
+                // revert add spot mode
+                if (self.mapView.addSpotMode) {
+                    self.revertAddSpotMode();
+                }
+            });
+
+            // setup search bar 'enter' event
+            $('#search-bar').on('enter', function() {
+                var searchPhrase = $('#search-bar').val();
+
+                // reset input field
+                $('#search-bar').val('');
+
+                // search with searchPhrase
+                self.search(searchPhrase);
             });
         },
 
@@ -42,8 +101,18 @@ define([
             this.mapObj.setZoom(this.mapObj.getZoom() - 1);
         },
 
+        // revert add spot mode
+        revertAddSpotMode: function() {
+            this.mapObj.setOptions({
+                draggableCursor: 'default'
+            });
+
+            this.mapView.addSpotMode = false;
+        },
+
         // search spots
-        search: function() {
+        search: function(searchPhrase) {
+            console.log('Searched: {}'.format(searchPhrase));
 
             // close info window if not null
             if (this.mapView.infoWindowView) {
@@ -76,6 +145,9 @@ define([
             // init spot window object
             this.spotWindowView = null;
 
+            // init add spot mode
+            this.addSpotMode = false;
+
             // center view on current location
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -94,17 +166,32 @@ define([
                 // close info window if not null
                 if (self.infoWindowView) {
                     self.infoWindowView.closeInfoWindow();
-                    self.infoWindowView = null;
                 }
 
                 // close spot window if not null
-                else if (self.spotWindowView) {
+                if (self.spotWindowView) {
                     self.spotWindowView.closeSpotWindow();
-                    self.spotWindowView = null;
                 }
 
-                // add spot 
-                else {
+                // reset both windows and return
+                if (self.infoWindowView || self.spotWindowView) {
+                    self.infoWindowView = null;
+                    self.spotWindowView = null;
+
+                    return;
+                }
+
+                // return if add spot mode is false
+                if (self.addSpotMode) {
+
+                    // revert add spot mode
+                    self.mapObj.setOptions({
+                        draggableCursor: 'default'
+                    });
+
+                    self.addSpotMode = false;
+
+                    // add spot 
                     if (self.mapObj.getZoom() >= 14) {
                         self.addSpot(e.latLng);
                     }
@@ -195,20 +282,28 @@ define([
                 // move to spot
                 self.mapObj.panTo(spot.data.position);
 
-                if (self.mapObj.getZoom() != 15) {
-                    self.mapObj.setZoom(15);
+                if (self.mapObj.getZoom() != 18) {
+                    self.mapObj.setZoom(18);
                 }
 
                 // close info window if not null
                 if (self.infoWindowView) {
                     self.infoWindowView.closeInfoWindow();
-                    self.infoWindowView = null;
                 }
 
                 // close spot window if not null
                 if (self.spotWindowView) {
                     self.spotWindowView.closeSpotWindow();
-                    self.spotWindowView = null;
+                }
+
+                // revert add spot mode if true
+                if (self.addSpotMode) {
+
+                    self.mapObj.setOptions({
+                        draggableCursor: 'default'
+                    });
+
+                    self.addSpotMode = false;
                 }
 
                 // create info window
@@ -221,9 +316,16 @@ define([
             // carry out operations if not initial load
             if (!initialLoad) {
                 this.spotClusterer.addMarker(spot, true);
+
+                // move to spot
+                this.mapObj.panTo(spot.data.position);
+
+                if (this.mapObj.getZoom() != 18) {
+                    this.mapObj.setZoom(18);
+                }
                 
                 // create spot window
-                self.spotWindowView = new app.SpotWindowView({
+                this.spotWindowView = new app.SpotWindowView({
                     spotObject: spot
                 });
             }
@@ -269,18 +371,20 @@ define([
 
                 // format content string
                 var contentString = '' +
-                    '<div id="content">'+
-                        '<div id="siteNotice">'+
-                        '</div>'+
-                        '<h1 id="firstHeading" class="firstHeading">Info</h1>'+
-                        '<div id="bodyContent">'+
-                        '<p><b>Description:</b> {}</p>'.format(self.spotData.description) +
-                        '</div>'+
+                    '<div id="content">' +
+                        '<div id="siteNotice">' +
+                        '</div>' +
+                        '<h1 id="firstHeading" class="firstHeading">Info</h1>' +
+                        '<div id="bodyContent">' +
+                            '<p><b>Description:</b> {}</p>'.format(self.spotData.description) +
+                        '</div>' +
+                        '<button>See More</button>' +
                     '</div>';
 
                 // buid info window
                 self.infoWindow = new google.maps.InfoWindow({
                     content: contentString,
+                    pixelOffset: new google.maps.Size(-1, -5),
                     maxWidth: 275
                 });
 
@@ -346,8 +450,12 @@ define([
             $('#search-bar').css('width', 400);
 
             // move spot window back to resting position
-            $('#spot-window').hide();
-            $('#spot-window').css('left', -345);
+            $('#spot-window').css('left', -348);
+
+            // wait for 1s transition
+            setTimeout(function() {
+                $('#spot-window').hide();
+            }, 1000);
         }
     });
 

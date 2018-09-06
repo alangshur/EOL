@@ -14,12 +14,16 @@
         <div id='map'></div>
 
         <div id='map-canvas'>
-            <div id='profile'>
-                <img id='profile-icon' src='./../assets/images/profile-icon.png' alt='Home Profile Icon'>
+            <div id='add-spot-wrapper'>
+                <img id='add-spot-icon' class='top-icon' src='./../assets/images/add-spot-icon.png' alt='Add Spot Icon'>
+            </div>
+
+            <div id='profile-wrapper'>
+                <img id='profile-icon' class='top-icon' src='./../assets/images/profile-icon.png' alt='Profile Icon'>
             </div>
             
             <div id='search-wrapper'>
-                <input id='search-bar' type='text'>
+                <input id='search-bar' name='Search Bar' type='text'>
             </div>
 
             <div id='zoom-controller'>
@@ -28,7 +32,9 @@
             </div>
     
             <div id='spot-window'>
-                
+                <div id='title-panel'></div>
+                <div id='info-panel'></div>
+                <div id='comment-panel'></div>
             </div>
         </div>
 
