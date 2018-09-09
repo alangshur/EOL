@@ -41,7 +41,7 @@ function initMap() {
                "featureType": "administrative",
                "elementType": "labels",
                "stylers": [  
-                    {  
+                    {
                         "visibility": "off"
                     }
                 ]

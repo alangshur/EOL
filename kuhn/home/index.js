@@ -2,6 +2,7 @@
 
 // init npm modules
 const path = require('path');
+const uuid = require('uuid');
 require('string-format').extend(String.prototype, {});
 
 // define middleware exports to main
@@ -23,6 +24,7 @@ module.exports = function(app, kwargs) {
 
     // GET for spot: #/spot
     app.get('/spot', (req, res) => {
+        console.log('GET Request @ /spot');
 
         // get spot data
         try {
@@ -42,39 +44,56 @@ module.exports = function(app, kwargs) {
 
     // POST for spot: #/spot
     app.post('/spot', (req, res) => {
+        console.log('POST Request @ /spot');
+
+        // create spot id
+        const spotId = 'spot-{}'.format(uuid.v1());
+
+        // create complete spot object
+        const spotObj = Object.assign({
+            spotId: spotId
+        }, req.body);
 
         // add spot to mongo collection
         try {
-            kwargs['mongoUtil'].Spot().insertOne(req.body, function(err) {
+            kwargs['mongoUtil'].Spot().insertOne(spotObj, function(err) {
                 if (err) throw err;
     
-                console.log('Successfully posted spot {} to db'.format(req.body.spotId));
+                console.log('Successfully posted spot {} to db'.format(spotId));
+
+                // send JSON response
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(spotObj));
             });
         }
         catch (err) {
             console.log('Error posting spot to db: {}'.format(err));
+            res.end();
         }
-
-        res.end();
     });
 
-    // POST for spot info: #/spot/info
-    app.post('/spot/info', (req, res) => {
+    // GET for spot info: #/spot/info
+    app.get('/spot/info', (req, res) => {
+        console.log('GET Request @ /spot/info');
 
         // get spot data for specific spot
         try {
             kwargs['mongoUtil'].Spot().find({
-                spotId: req.body.spotId
+                spotId: req.query.spotId
             }).toArray(function(err, result) {
                 if (err) throw err;
 
+                if (result.length > 1) {
+                    throw 'Overlapping spots error';
+                }
+
                 // send JSON response
                 res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify(result));
+                res.send(JSON.stringify(result[0]));
             });
         }
         catch (err) {
-            console.log('Error fetching spot {} from db: {}'.format(req.body.spotId, err));
+            console.log('Error fetching spot {} from db: {}'.format(req.query.spotId, err));
             res.end();
         }
     });

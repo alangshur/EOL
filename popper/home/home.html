@@ -31,11 +31,7 @@
                 <img id='zoom-out' src='./../assets/images/minus-icon.png' alt='Minus Icon'>
             </div>
     
-            <div id='spot-window'>
-                <div id='title-panel'></div>
-                <div id='info-panel'></div>
-                <div id='comment-panel'></div>
-            </div>
+            <div id='spot-window'></div>
         </div>
 
         <!-- load requirejs with main/main -->
@@ -49,3 +45,59 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDU6GLUtVJH1YBM8bKGh_jcg98wUu7Xri4&callback=initMap" async defer></script>
     </body>
 </html>
+
+<script id='spot-window-template' type='text/template'>
+    <div id='info-panel'>
+        <h2>Spot Information</h2>
+        <div class='info-section'>
+            <h3>Name</h3>
+            <div class='info-section-body'>
+                <%= spot.title %>
+            </div>
+        </div>
+        <div class='info-section'>
+            <h3>Author</h3>
+            <div class='info-section-body'>
+                <%= spot.author %>
+            </div>
+        </div>
+        <div class='info-section'>
+            <h3>Type</h3>
+            <div class='info-section-body'>
+                <%= spot.type %>
+            </div>
+        </div>
+        <div class='info-section'>
+            <h3>Description</h3>
+            <div id='info-description'>
+                <%= spot.description %>
+            </div>
+        </div>
+    </div>
+    <div id='comment-panel'>
+        <h2>Comments</h2>
+        <div id='comment-section'>
+            <% for (var comment in spot.comments) { %>
+                <div id='comment-body'>
+                    <div id='comment-text'><%= comment.text %></div>
+                    <div id='comment-user'><%= comment.user %></div>
+                    <div id='comment-time'><%= comment.time %></div>
+                    <div id='reply-button'></div>
+
+                    <!-- <% for (var reply in comment.replies) { %> 
+                        <div id='reply-body'>
+                            <div id='reply-text'></div>
+                            <div id='reply-user'></div>
+                            <div id='reply-time'></div>
+                        </div>
+
+                        <div id='reply-field'></div>
+                    <% } %> -->
+                </div>
+            <% } %>
+
+            <!-- ADD COMMENT -->
+            <!-- <div id='comment-field'></div> -->
+        </div>
+    </div>
+</script>

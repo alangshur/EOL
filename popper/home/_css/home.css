@@ -1,3 +1,12 @@
+/* TAGS */
+
+h2 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    margin-left: 8px;
+    margin-top: 7px;
+}
+
 /* CLASSES */
 
 .top-icon {
@@ -6,6 +15,21 @@
     width: 45px;
     top: 24px;
     cursor: pointer;
+}
+
+.info-section {
+    position: relative;
+    left: 10px;
+    margin-top: 25px;
+    font-size: 13px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.info-section-body {
+    position: relative;
+    float: right;
+    right: 25px;
+    bottom: 29.8px;
 }
 
 /* IDS */
@@ -86,4 +110,30 @@
     transition: 1s;
     border-right: 1.5px solid;
     border-radius: 10px;
+}
+
+#spot-window {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    background-color: #f0f0f0;
+}
+
+#info-panel {
+    order: 2;
+    border-bottom: 1px solid black;
+}
+
+#info-description {
+    position: relative;
+    left: 15px;
+    max-height: 135px;
+    width: 305px;
+    margin-top: -5px;
+    margin-bottom: 15px;
+    overflow: scroll;
+}
+
+#comment-panel {
+    order: 3;
 }

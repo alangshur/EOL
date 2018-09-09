@@ -14,7 +14,7 @@
             'backbone': 'backbone-min',
             'jquery-main': 'jquery-min',
             'underscore': 'underscore-min',
-            'spot-clusterer': 'marker-clusterer',
+            'spot-clusterer': 'marker-clusterer-min',
 
             // configure custom modules
             'format': customModuleUrl + 'format',

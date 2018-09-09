@@ -29,21 +29,9 @@ define([
 
             // add custom zoom functionality
             $('#zoom-in').on('click', function() {
-
-                // revert add spot mode
-                if (self.mapView.addSpotMode) {
-                    self.revertAddSpotMode();
-                }
-
                 self.zoomMapIn();
             });
             $('#zoom-out').on('click', function() {
-
-                // revert add spot mode
-                if (self.mapView.addSpotMode) {
-                    self.revertAddSpotMode();
-                }
-
                 self.zoomMapOut();
             });
             
@@ -53,8 +41,13 @@ define([
                     self.revertAddSpotMode();
                 }
                 else {
+                    if (self.mapObj.getZoom() < 16) {
+                        self.mapObj.setZoom(16);
+                    }
+
                     self.mapObj.setOptions({
-                        draggableCursor: 'copy'
+                        draggableCursor: 'copy',
+                        minZoom: 16
                     });
 
                     self.mapView.addSpotMode = true;
@@ -104,7 +97,8 @@ define([
         // revert add spot mode
         revertAddSpotMode: function() {
             this.mapObj.setOptions({
-                draggableCursor: 'default'
+                draggableCursor: 'default',
+                minZoom: 11
             });
 
             this.mapView.addSpotMode = false;
@@ -186,7 +180,8 @@ define([
 
                     // revert add spot mode
                     self.mapObj.setOptions({
-                        draggableCursor: 'default'
+                        draggableCursor: 'default',
+                        minZoom: 11
                     });
 
                     self.addSpotMode = false;
@@ -227,17 +222,15 @@ define([
                 // set spot clustering strategy
                 self.spotClusterer = new MarkerClusterer(self.mapObj, preloadedSpots, {
                     imagePath: './../../assets/images/cluster-',
-                    maxZoom: 14
+                    maxZoom: 15
                 });
             });
         },
 
         // add spot to map and db
         addSpot: function(position) {
-
-            // generate unique id
-            const id = $.fn.uid();
-
+            var self = this;
+            
             // format position
             var pos = {
                 lat: position.lat(),
@@ -246,15 +239,22 @@ define([
 
             // add spot to collection
             this.spotCollection.create({
-                spotId: id,
                 position: pos
-            });
+            }, {
+                success: function(model, response) {
 
-            // place spots
-            this.placeSpot({
-                spotId: id,
-                position: pos
-            }, pos, false)
+                    // set id on model
+                    model.set({
+                        spotId: response.spotId
+                    });
+
+                    // place spot
+                    self.placeSpot({
+                        spotId: response.spotId,
+                        position: response.position
+                    }, response.position, false);
+                }
+            });
         },
 
         // place spot on map
@@ -301,7 +301,8 @@ define([
                 // revert add spot mode if true
                 if (self.addSpotMode) {
                     self.mapObj.setOptions({
-                        draggableCursor: 'default'
+                        draggableCursor: 'default',
+                        minZoom: 11
                     });
 
                     self.addSpotMode = false;
@@ -365,7 +366,7 @@ define([
 
             // fetch spot data
             $.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: '/spot/info',
                 data: {
                     spotId: this.spotObj.data.spotId
@@ -425,7 +426,7 @@ define([
 
     // spot window view
     app.SpotWindowView = Backbone.View.extend({
-        el: $('spot-window'),
+        el: $('#spot-window'),
 
         // prepare spot window data
         initialize: function(options) {
@@ -442,7 +443,7 @@ define([
 
             // fetch spot data
             $.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: '/spot/info',
                 data: {
                     spotId: this.spotObj.data.spotId
@@ -452,22 +453,55 @@ define([
                 },
                 dataType: 'json'
             }).done(function() {
-
+        
                 // open window
                 self.openSpotWindow();
             });
         },
 
+        // render spot window
+        render: function(spotInfo) {
+            var template = _.template($('#spot-window-template').html());
+
+            this.$el.html(template({
+                spot: {
+                    title: 'My Home',
+                    author: 'Alex Langshur',
+                    type: 'Residence',
+                    description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque' + 
+                    'laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae' + 
+                    'vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,' + 
+                    'sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, ' + 
+                    'qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora ' + 
+                    'incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum ' + 
+                    'exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel' + 
+                    'eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem' + 
+                    'eum fugiat quo voluptas nulla pariatur?',
+                    comments: [
+                        {
+                            text: 'sample text',
+                            user: 'sample user',
+                            time: 'sample time',
+                            replies: []
+                        }
+                    ]
+                }
+            }));
+        },
+
         // open spot window
         openSpotWindow: function() {
+
+            // render window
+            this.render(this.spotData);
 
             // modify search bar
             $('#search-bar').css('margin-left', 267);
             $('#search-bar').css('width', 300);
 
             // move spot window
-            $('#spot-window').show();
-            $('#spot-window').css('left', 0);
+            this.$el.show();
+            this.$el.css('left', 0);
         },
 
         // close spot window
@@ -478,7 +512,7 @@ define([
             $('#search-bar').css('width', 400);
 
             // move spot window back to resting position
-            $('#spot-window').css('left', -348);
+            this.$el.css('left', -348);
 
             // wait for 1s transition
             setTimeout(function() {
