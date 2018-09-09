@@ -7,7 +7,7 @@ function initMap() {
 
         // configure initial viewport
         center: {lat: 41.957280, lng: -87.666540},
-        zoom: 15,
+        zoom: 16,
 
         // set cursor type
         draggableCursor: 'default',
