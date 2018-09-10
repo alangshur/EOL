@@ -510,9 +510,12 @@ define([
             // render window
             this.render(this.spotData);
 
+            // get profile icon width percentage
+            const profileIconWidthPercentage = 45 / window.innerWidth * 100;
+
             // modify search bar
-            $('#search-wrapper').css('margin-left', '17%');
             $('#search-wrapper').css('width', '30%');
+            $('#search-wrapper').css('left', '{}%'.format(70 - ((profileIconWidthPercentage + 33) / 2)));
 
             // move spot window
             this.$el.show();
@@ -530,8 +533,8 @@ define([
             });
 
             // move search back to resting position
-            $('#search-wrapper').css('margin-left', 0);
             $('#search-wrapper').css('width', '35%');
+            $('#search-wrapper').css('left', '{}%'.format(50 - (35 / 2)));
 
             // move spot window back to resting position
             this.$el.css('left', '-41%');
