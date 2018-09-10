@@ -327,7 +327,7 @@ define([
                     this.mapObj.setZoom(18);
                 }
                 
-                // create spot window
+                // create spot window (TODO: make modal for spot editing)
                 this.spotWindowView = new app.SpotWindowView({
                     mapView: self,
                     mapObject: self.mapObj,
@@ -496,8 +496,8 @@ define([
             this.render(this.spotData);
 
             // modify search bar
-            $('#search-bar').css('margin-left', 267);
-            $('#search-bar').css('width', 300);
+            $('#search-wrapper').css('margin-left', '17%');
+            $('#search-wrapper').css('width', '30%');
 
             // move spot window
             this.$el.show();
@@ -508,11 +508,11 @@ define([
         closeSpotWindow: function() {
 
             // move search back to resting position
-            $('#search-bar').css('margin-left', 0);
-            $('#search-bar').css('width', 400);
+            $('#search-wrapper').css('margin-left', 0);
+            $('#search-wrapper').css('width', '35%');
 
             // move spot window back to resting position
-            this.$el.css('left', -348);
+            this.$el.css('left', '-41%');
 
             // wait for 1s transition
             setTimeout(function() {

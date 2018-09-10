@@ -1,7 +1,10 @@
 /* TAGS */
 
-h2 {
+html {
     font-family: Arial, Helvetica, sans-serif;
+}
+
+h2 {
     font-size: 20px;
     margin-left: 8px;
     margin-top: 7px;
@@ -13,7 +16,7 @@ h2 {
     position: absolute;
     z-index: 99;
     width: 45px;
-    top: 24px;
+    top: 22.5px;
     cursor: pointer;
 }
 
@@ -22,7 +25,6 @@ h2 {
     left: 10px;
     margin-top: 25px;
     font-size: 13px;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 .info-section-body {
@@ -43,18 +45,23 @@ h2 {
 }
 
 #search-wrapper {
+    /* positioning */
     position: absolute;
     z-index: 99;
+    width: 35%;
     top: 45px;
     left: 50%;
+
+    /* styling */
     transform: translate(-50%, -50%);
+    transition: 1s;
 }
 
 #search-bar {
     /* positioning */
     z-index: 99;
     height: 35px;
-    width: 400px;
+    width: 100%;
     padding-left: 12px;
     margin-left: 0px;
 
@@ -62,8 +69,7 @@ h2 {
     border: 1.5px solid #000000;
     border-radius: 3px;
     outline-width: 0;
-    font-size: 16px;
-    transition: 1s;
+    font-size: 18px;
 }
 
 #zoom-in {
@@ -101,22 +107,18 @@ h2 {
     position: absolute;
     z-index: 99;
     height: 100%;
-    width: 345px;
+    width: 40%;
     top: 0;
-    left: -348px;
-
-    /* styling */
-    background-color: #ffffff;
-    transition: 1s;
-    border-right: 1.5px solid;
-    border-radius: 10px;
-}
-
-#spot-window {
+    left: -41%;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+
+    /* styling */
     background-color: #f0f0f0;
+    transition: 1s;
+    border-right: 1.5px solid;
+    border-radius: 10px;
 }
 
 #info-panel {
@@ -126,9 +128,9 @@ h2 {
 
 #info-description {
     position: relative;
-    left: 15px;
+    left: 4%;
     max-height: 135px;
-    width: 305px;
+    width: 88%;
     margin-top: -5px;
     margin-bottom: 15px;
     overflow: scroll;
@@ -136,4 +138,5 @@ h2 {
 
 #comment-panel {
     order: 3;
+    font-size: 13px;
 }
