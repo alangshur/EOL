@@ -441,6 +441,21 @@ define([
             // set spot object on view
             this.spotObj = options.spotObject;
 
+            // move to spot with window offset
+            this.mapObj.panTo(this.spotObj.data.position);
+            this.mapObj.panBy(this.mapObj.getDiv().offsetWidth * -0.2, 0);
+
+            if (this.mapObj.getZoom() != 18) {
+                this.mapObj.setZoom(18);
+            }
+
+            // convert marker style
+            this.spotObj.setIcon({
+                url: './../../assets/images/marker-selected.png',
+                scaledSize: new google.maps.Size(35, 35),
+                anchor: new google.maps.Point(17, 35)
+            });
+
             // fetch spot data
             $.ajax({
                 type: 'GET',
@@ -506,6 +521,13 @@ define([
 
         // close spot window
         closeSpotWindow: function() {
+
+            // revert icon style
+            this.spotObj.setIcon({
+                url: './../../assets/images/marker.png',
+                scaledSize: new google.maps.Size(35, 35),
+                anchor: new google.maps.Point(17, 35)
+            });
 
             // move search back to resting position
             $('#search-wrapper').css('margin-left', 0);
