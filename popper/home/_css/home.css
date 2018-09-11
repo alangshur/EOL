@@ -4,10 +4,17 @@ html {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-h2 {
+#spot-window h2 {
     font-size: 20px;
     margin-left: 8px;
     margin-top: 7px;
+    font-style: oblique;
+}
+
+#info-panel h3 {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-left: 12px;
 }
 
 /* CLASSES */
@@ -34,16 +41,19 @@ h2 {
 
 .info-section {
     position: relative;
-    left: 10px;
+    left: 15px;
     margin-top: 15px;
     font-size: 13px;
+    background: #fbfbfb;
+    border-radius: 15px;
+    margin-right: 30px;
 }
 
 .info-section-body {
     position: relative;
     float: right;
-    right: 25px;
-    bottom: 29.8px;
+    right: 12px;
+    bottom: 35px;
 }
 
 /* IDS */
@@ -117,16 +127,17 @@ h2 {
 
 #info-panel {
     order: 2;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #000000;
 }
 
 #info-description {
     position: relative;
-    left: 4%;
+    left: 22px;
     max-height: 135px;
-    width: 88%;
-    margin-top: -5px;
+    margin-top: -15px;
+    margin-right: 34px;
     margin-bottom: 15px;
+    padding-bottom: 7px;
     overflow: scroll;
 }
 
