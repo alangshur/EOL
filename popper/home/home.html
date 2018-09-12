@@ -78,22 +78,27 @@
         <h2>Comments</h2>
         <div id='comment-section'>
             <% for (var i in spot.comments) { %>
-                <div id='comment-body'>
+                <div class='comment-body' style='order:<%= i %>'>
                     
-                    <div id='comment-text'><%= spot.comments[i].text %></div>
-                    <div id='comment-user'><%= spot.comments[i].user %></div>
-                    <div id='comment-time'><%= spot.comments[i].time %></div>
-                    <div id='reply-button'></div>
+                    <h3><%= spot.comments[i].user %></h3>
+                    <div class='comment-dash-1'>|</div>
+                    <div class='comment-time'><%= spot.comments[i].time %></div>
+                    <div class='comment-dash-2'>|</div>
+                    <div class='reply-button'>Reply</div>
+                    <div class='comment-text'><%= spot.comments[i].text %></div>
 
-                    <% for (var reply in spot.comments[i].replies) { %> 
-                        <div id='reply-body'>
-                            <div id='reply-text'></div>
-                            <div id='reply-user'></div>
-                            <div id='reply-time'></div>
-                        </div>
+                    <div class='reply-section'>
+                        <% for (var reply in spot.comments[i].replies) { %> 
+                            <div class='reply-body'>
+                                <h3><%= spot.comments[i].user %></h3>
+                                <div class='comment-time'><%= spot.comments[i].time %></div>
+                                <div class='comment-text'><%= spot.comments[i].text %></div>
+                                <div class='reply-button'></div>
+                            </div>
 
-                        <div id='reply-field'></div>
-                    <% } %>
+                            <div class='reply-field'></div>
+                        <% } %>
+                    </div>
                 </div>
             <% } %>
 
