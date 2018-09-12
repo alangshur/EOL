@@ -76,34 +76,33 @@
     </div>
     <div id='comment-panel'>
         <h2>Comments</h2>
+        <img id='add-comment' src='./../assets/images/add-icon.png' alt='Plus Icon'>
         <div id='comment-section'>
             <% for (var i in spot.comments) { %>
-                <div class='comment-body' style='order:<%= i %>'>
-                    
+                <div class='comment-body'>
                     <h3><%= spot.comments[i].user %></h3>
                     <div class='comment-dash-1'>|</div>
                     <div class='comment-time'><%= spot.comments[i].time %></div>
                     <div class='comment-dash-2'>|</div>
                     <div class='reply-button'>Reply</div>
                     <div class='comment-text'><%= spot.comments[i].text %></div>
-
-                    <div class='reply-section'>
-                        <% for (var reply in spot.comments[i].replies) { %> 
-                            <div class='reply-body'>
-                                <h3><%= spot.comments[i].user %></h3>
-                                <div class='comment-time'><%= spot.comments[i].time %></div>
-                                <div class='comment-text'><%= spot.comments[i].text %></div>
-                                <div class='reply-button'></div>
-                            </div>
-
-                            <div class='reply-field'></div>
-                        <% } %>
-                    </div>
+                </div>
+                <div class='reply-section'>
+                    <% if (spot.comments[i].replies.length) { %>
+                        <img class='reply-indent' src='./../assets/images/reply-indent-icon.png' alt='Reply Indent Icon'>
+                    <% } %>
+                    <% for (var j in spot.comments[i].replies) { %>
+                        <div class='comment-body'>
+                            <h3><%= spot.comments[i].replies[j].user %></h3>
+                            <div class='comment-dash-1'>|</div>
+                            <div class='comment-time'><%= spot.comments[i].replies[j].time %></div>
+                            <div class='comment-dash-2'>|</div>
+                            <div class='reply-button'>Reply</div>
+                            <div class='comment-text'><%= spot.comments[i].replies[j].text %></div>
+                        </div>
+                    <% } %>
                 </div>
             <% } %>
-
-            <!-- ADD COMMENT -->
-            <!-- <div id='comment-field'></div> -->
         </div>
     </div>
 </script>

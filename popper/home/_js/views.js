@@ -489,13 +489,47 @@ define([
                             text: 'I agree! I really like your home, Alex!',
                             user: 'SebastienNacher',
                             time: 'September 11, 2018 at 5:33 PM',
-                            replies: []
+                            replies: [
+                                {
+                                    text: 'Couldn\'t have said it better myself!',
+                                    user: 'RyanKearns',
+                                    time: 'September 12, 2018 at 2:06 PM'
+                                },
+                                {
+                                    text: 'Good talk fam!',
+                                    user: 'AlexLangshur',
+                                    time: 'September 12, 2018 at 2:07 PM'
+                                }
+                            ]
                         },
                         {
                             text: 'Lovely home! Great place to be!',
                             user: 'OttoMarloft',
                             time: 'September 11, 2018 at 5:41 PM',
-                            replies: []
+                            replies: [
+                                {
+                                    text: 'Yas Queen!!',
+                                    user: 'MaxComolli',
+                                    time: 'September 14, 2018 at 2:14 PM'
+                                }
+                            ]
+                        },
+                        {
+                            text: 'I agree! I really like your home, Alex!',
+                            user: 'SebastienNacher',
+                            time: 'September 11, 2018 at 5:33 PM',
+                            replies: [
+                                {
+                                    text: 'Couldn\'t have said it better myself!',
+                                    user: 'RyanKearns',
+                                    time: 'September 12, 2018 at 2:06 PM'
+                                },
+                                {
+                                    text: 'Good talk fam!',
+                                    user: 'AlexLangshur',
+                                    time: 'September 12, 2018 at 2:07 PM'
+                                }
+                            ]
                         }
                     ]
                 }
