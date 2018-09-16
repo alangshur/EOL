@@ -32,6 +32,11 @@ html {
 
 /* CLASSES */
 
+.blur {
+    filter: blur(4px);
+    transition: 0s;
+}
+
 .top-icon {
     position: absolute;
     z-index: 99;
@@ -235,16 +240,24 @@ html {
     overflow: scroll;
 }
 
+#comment-section {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+#edit-spot {
+    position: absolute;
+    width: 17px;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
 #add-comment {
     position: absolute;
     width: 20px;
     top: 9px;
     right: 8px;
     cursor: pointer;
-}
-
-#comment-section {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
 }

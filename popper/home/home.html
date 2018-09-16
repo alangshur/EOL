@@ -11,6 +11,8 @@
         <link href="./_css/map.css" rel="stylesheet" type="text/css"> 
     </head>
     <body>
+        <div id='modal-anchor'></div>
+
         <div id='map'></div>
 
         <div id='map-canvas'>
@@ -49,6 +51,7 @@
 <script id='spot-window-template' type='text/template'>
     <div id='info-panel'>
         <h2>Spot Information</h2>
+        <img id='edit-spot' src='./../assets/images/edit-spot-icon.png' alt='Edit Icon'>
         <div class='info-section'>
             <h3>Name</h3>
             <div class='info-section-body'>
@@ -84,7 +87,10 @@
                     <div class='comment-dash-1'>|</div>
                     <div class='comment-time'><%= spot.comments[i].time %></div>
                     <div class='comment-dash-2'>|</div>
-                    <div class='reply-button'>Reply</div>
+                    <div class='reply-button' 
+                        data-comment-username='<%= spot.comments[i].user %>' 
+                        data-comment-id='<%= spot.comments[i].commentId %>'>Reply
+                    </div>
                     <div class='comment-text'><%= spot.comments[i].text %></div>
                 </div>
                 <div class='reply-section'>
@@ -97,7 +103,10 @@
                             <div class='comment-dash-1'>|</div>
                             <div class='comment-time'><%= spot.comments[i].replies[j].time %></div>
                             <div class='comment-dash-2'>|</div>
-                            <div class='reply-button'>Reply</div>
+                            <div class='reply-button' 
+                                data-comment-username='<%= spot.comments[i].replies[j].user %>' 
+                                data-comment-id='<%= spot.comments[i].replies[j].commentId %>'>Reply
+                            </div>
                             <div class='comment-text'><%= spot.comments[i].replies[j].text %></div>
                         </div>
                     <% } %>
@@ -106,3 +115,9 @@
         </div>
     </div>
 </script>
+
+<script id='profile-window-template' type='text/template'>
+
+<script id='add-comment-modal-template' type='text/template'></script>
+
+<script id='add-spot-modal-template' type='text/template'></script>

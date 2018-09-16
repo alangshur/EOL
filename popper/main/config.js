@@ -22,6 +22,8 @@
 
             // configure home modules
             'home-views': homeUrl + 'views',
+            'home-modal-views': homeUrl + 'modal-views',
+            'home-window-views': homeUrl + 'window-views',
             'home-models': homeUrl + 'models',
 
             // configure login modules
