@@ -3,6 +3,7 @@
 // init npm modules
 const path = require('path');
 const uuid = require('uuid');
+const datetime = require('date-and-time');
 require('string-format').extend(String.prototype, {});
 
 // define middleware exports to main
@@ -22,9 +23,9 @@ module.exports = function(app, kwargs) {
         });
     });
 
-    // GET for spot: #/spot
-    app.get('/spot', (req, res) => {
-        console.log('GET Request @ /spot');
+    // GET for populate: #/populate
+    app.get('/populate', (req, res) => {
+        console.log('GET Request @ /populate');
 
         // get spot data
         try {
@@ -42,54 +43,20 @@ module.exports = function(app, kwargs) {
         }
     });
 
-    // POST for spot: #/spot
-    app.post('/spot', (req, res) => {
-        console.log('POST Request @ /spot');
-
-        // create spot id
-        const spotId = 'spot-{}'.format(uuid.v1());
-
-        // create complete spot object
-        const spotObj = Object.assign({
-            spotId: spotId
-        }, req.body);
-
-        // add spot to mongo collection
-        try {
-            kwargs['mongoUtil'].Spot().insertOne(spotObj, function(err) {
-                if (err) throw err;
-    
-                console.log('Successfully posted spot {} to db'.format(spotId));
-
-                // send JSON response
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify(spotObj));
-            });
-        }
-        catch (err) {
-            console.log('Error posting spot to db: {}'.format(err));
-            res.end();
-        }
-    });
-
-    // GET for spot info: #/spot/info
-    app.get('/spot/info', (req, res) => {
-        console.log('GET Request @ /spot/info');
+    // GET for spot: #/spot
+    app.get('/spot', (req, res) => {
+        console.log('GET Request @ /spot');
 
         // get spot data for specific spot
         try {
-            kwargs['mongoUtil'].Spot().find({
+            kwargs['mongoUtil'].Spot().findOne({
                 spotId: req.query.spotId
-            }).toArray(function(err, result) {
+            }, function(err, result) {
                 if (err) throw err;
-
-                if (result.length > 1) {
-                    throw 'Overlapping spots error';
-                }
 
                 // send JSON response
                 res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify(result[0]));
+                res.send(JSON.stringify(result));
             });
         }
         catch (err) {
@@ -97,4 +64,187 @@ module.exports = function(app, kwargs) {
             res.end();
         }
     });
+
+    // POST for spot: #/spot
+    app.post('/spot', (req, res) => {
+        console.log('POST Request @ /spot');
+
+        var modifiedData = {
+            $set: {}
+        };
+
+        if (req.body.isEdit === 'true') {
+
+            // add each changed field
+            if (req.body.spotData.title != req.body.modifiedSpotData.title) {
+                modifiedData.$set.title = req.body.modifiedSpotData.title;
+            }
+            
+            if (req.body.spotData.type != req.body.modifiedSpotData.type) {
+                modifiedData.$set.type = req.body.modifiedSpotData.type;
+            }
+
+            if (req.body.spotData.description != req.body.modifiedSpotData.description) {
+                modifiedData.$set.description = req.body.modifiedSpotData.description;
+            }
+
+            if (!Object.keys(modifiedData.$set).length) {
+                console.log('Error editing spot {}: field values not changed'.format(req.body.spotData.spotId));
+
+                // send JSON response
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify({
+                    spotId: req.body.spotData.spotId
+                }));
+
+                return;
+            }
+
+            // replace db spot data with modified data
+            try {
+                kwargs['mongoUtil'].Spot().updateOne({
+                    spotId: req.body.spotData.spotId
+                }, modifiedData, function(err) {
+                    if (err) throw err;
+
+                    // print success message
+                    console.log('Successfully edited spot {}'.format(req.body.spotData.spotId));
+
+                    // send JSON response
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify({
+                        spotId: req.body.spotData.spotId
+                    }));
+                });
+            }
+            catch (err) {
+                console.log('Error editing spot {}: {}'.format(req.body.spotData.spotId, err));
+                res.end();
+            }
+        }
+        else {
+
+            // generate spot id
+            var spotId = 'spot-{}'.format(uuid.v1());
+
+            // prepare new spot package
+            newSpotData = {
+                spotId: spotId,
+                position: req.body.spotData.position, 
+                title: req.body.modifiedSpotData.title,
+                author: req.user.username,
+                authorId: req.user._id,
+                type: req.body.modifiedSpotData.type,
+                description: req.body.modifiedSpotData.description,
+                comments: []
+            }
+
+            // insert spot data
+            try {
+                kwargs['mongoUtil'].Spot().insertOne(newSpotData, function(err) {
+                    if (err) throw err;
+
+                    // print success message
+                    console.log('Successfully posted spot {}'.format(spotId));
+
+                    // send JSON response
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify({
+                        spotId: spotId
+                    }));
+                });
+            }
+            catch (err) {
+                console.log('Error posting new spot {}: {}'.format(spotId, err));
+                res.end();
+            }
+        }
+    });
+
+    app.post('/spot/comment', (req, res) => {
+        console.log('POST Request @ /spot/comment');
+
+        // parse body string JSON
+        const spotData = JSON.parse(req.body.spotData);
+        var commentsArr = spotData.comments;
+
+        // generate comment id
+        const commentId = 'comment-{}'.format(uuid.v1());
+
+        // generate datetime
+        const formattedDateTime =  datetime.format(new Date(), 'MMMM[ ]D[, ]Y[ at ]h[:]mm[ ]A');
+        
+        if (req.body.isReply === 'true') {
+
+            // format comment package
+            const commentPackage = {
+                commentId: commentId,
+                type: 'reply',
+                text: req.body.comment,
+                time: formattedDateTime,
+                user: req.user.username,
+                userId: req.user._id
+            };
+
+            (function () {
+                for (let i in spotData.comments) {
+                    if (spotData.comments[i].commentId == req.body.replyTargetId) {
+
+                        // push package at location
+                        (commentsArr[i].replies).push(commentPackage);
+                        return;
+                    }
+
+                    for (let j in spotData.comments[i].replies) {
+                        if (spotData.comments[i].replies[j].commentId == req.body.replyTargetId) {
+
+                            // push package at location
+                            (commentsArr[i].replies).push(commentPackage);
+                            return;
+                        }
+                    }
+                }
+            })();
+        }
+        else {
+
+            // inject comment package
+            commentsArr.push({
+                commentId: commentId,
+                type: 'comment',
+                text: req.body.comment,
+                time: formattedDateTime,
+                user: req.user.username,
+                userId: req.user._id,
+                replies: []
+            });
+        }
+
+        // replace db spot data with modified data
+        try {
+            kwargs['mongoUtil'].Spot().updateOne({
+                spotId: spotData.spotId
+            }, {
+                $set: {
+                    comments: commentsArr,
+                }
+            }, function(err) {
+                if (err) throw err;
+
+                // print success message
+                console.log('Successfully posted comment {} to spot {}'.format(commentId, spotData.spotId));
+                
+                // send JSON response
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify({
+                    spotId: spotData.spotId
+                }));
+            });
+        }
+        catch (err) {
+            console.log('Error posting {} to db: {}'.format(req.body.postType, err));
+            res.end();
+        }
+    });
 }
+

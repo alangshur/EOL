@@ -6,8 +6,7 @@ define([
     'format',
     'home-window-views',
     'home-modal-views',
-    'home-models'
-], function(Backbone, $, _, __spotClusterer, __format, homeWindowViews, homeModalViews, homeModels) {
+], function(Backbone, $, _, __spotClusterer, __format, homeWindowViews, homeModalViews) {
     var app = {};
 
     // home view
@@ -31,14 +30,32 @@ define([
 
             // add custom zoom functionality
             $('#zoom-in').on('click', function() {
+
+                // ignore if modal is open
+                if (self.mapView.modalView) {
+                    return;
+                }
+
                 self.zoomMapIn();
             });
             $('#zoom-out').on('click', function() {
+
+                // ignore if modal is open
+                if (self.mapView.modalView) {
+                    return;
+                }
+
                 self.zoomMapOut();
             });
             
             // setup add spot event
             $('#add-spot-icon').on('click', function() {
+
+                // ignore if modal is open
+                if (self.mapView.modalView) {
+                    return;
+                }
+
                 if (self.mapView.addSpotMode) {
                     self.revertAddSpotMode();
                 }
@@ -59,6 +76,11 @@ define([
             // setup profile event
             $('#profile-icon').on('click', function() {
 
+                // ignore if modal is open
+                if (self.mapView.modalView) {
+                    return;
+                }
+
                 // revert add spot mode
                 if (self.mapView.addSpotMode) {
                     self.revertAddSpotMode();
@@ -67,6 +89,11 @@ define([
 
             // setup search bar 'click' event
             $('#search-bar').on('click', function() {
+
+                // ignore if modal is open
+                if (self.mapView.modalView) {
+                    return;
+                }
             
                 // revert add spot mode
                 if (self.mapView.addSpotMode) {
@@ -76,6 +103,12 @@ define([
 
             // setup search bar 'enter' event
             $('#search-bar').on('enter', function() {
+
+                // ignore if modal is open
+                if (self.mapView.modalView) {
+                    return;
+                }
+
                 var searchPhrase = $('#search-bar').val();
 
                 // reset input field
@@ -162,6 +195,11 @@ define([
             // add spot on map click event
             this.mapObj.addListener('click', function(e) {
 
+                // ignore if modal is open
+                if (self.modalView) {
+                    return;
+                }
+
                 // close info window if not null
                 if (self.infoWindowView) {
                     self.infoWindowView.closeInfoWindow();
@@ -198,9 +236,6 @@ define([
                 }
             });
 
-            // init marker collection on view
-            this.spotCollection = new homeModels.SpotCollection();
-
             // populate map
             this.populateMap();
         },
@@ -210,18 +245,46 @@ define([
             var preloadedSpots = [];
 
             // update collection with spots
-            this.spotCollection.fetch({
-                reset: true
+            $.ajax({
+                type: 'GET',
+                url: '/populate',
+                dataType: 'json',
+                success: function(res) {
+                    self.spotArr = res;
+                }
             }).done(function() {
 
-                // place spots
-                for(let spot of self.spotCollection.toJSON()) {
-                    var preloadedSpot = self.placeSpot({
-                        spotId: spot.spotId,
-                        position: spot.position
-                    }, spot.position, true);
+                // initialize every spot
+                for(let spot of self.spotArr) {
 
-                    preloadedSpots.push(preloadedSpot);
+                    // correct spot position
+                    var correctedPosition =  {
+                        lat: Number(spot.position.lat),
+                        lng: Number(spot.position.lng)
+                    };
+
+                    // add spot to map
+                    var spotObj = new google.maps.Marker({
+                        position: correctedPosition,
+                        map: self.mapObj,
+                        animation: null,
+                        icon: {
+                            url: './../../assets/images/marker.png',
+                            scaledSize: new google.maps.Size(35, 35),
+                            anchor: new google.maps.Point(17, 35)
+                        }
+                    });
+
+                    preloadedSpots.push(spotObj);
+
+                    // set spot data
+                    spotObj.set('data', {
+                        spotId: spot.spotId,
+                        position: correctedPosition
+                    });
+
+                    // add spot event listener
+                    self.configureSpotListener(spotObj);
                 }
 
                 // set spot clustering strategy
@@ -233,74 +296,62 @@ define([
         },
 
         // add spot to map and db
-        addSpot: function(position) {
-            var self = this;
-            
+        addSpot: function(position) {     
+
             // format position
-            var pos = {
+            var formattedPosition = {
                 lat: position.lat(),
                 lng: position.lng()
             }
 
-            // add spot to collection
-            this.spotCollection.create({
-                position: pos
-            }, {
-                success: function(model, response) {
+            // move to spot
+            this.mapObj.panTo(formattedPosition);
 
-                    // set id on model
-                    model.set({
-                        spotId: response.spotId
-                    });
+            if (this.mapObj.getZoom() != 18) {
+                this.mapObj.setZoom(18);
+            }
 
-                    // place spot
-                    self.placeSpot({
-                        spotId: response.spotId,
-                        position: response.position
-                    }, response.position, false);
-                }
+            // close all windows
+            this.closeAllWindows();
+
+            // set new spot window with open override
+            this.spotWindowView = new homeWindowViews.SpotWindowView({
+                mapView: this,
+                mapObject: this.mapObj,
+                spotObject: null,
+                overrideOpen: true
+            });
+
+            // create spot modal
+            this.modalView = new homeModalViews.AddSpotModalView({
+                mapView: this,
+                spotWindowView: this.spotWindowView,
+                spotData: {
+                    position: formattedPosition
+                },
+                isEdit: false
             });
         },
 
         // place spot on map
-        placeSpot: function(spotData, position, initialLoad) {
+        configureSpotListener: function(spotObj) {
             var self = this;
+            
+            google.maps.event.addListener(spotObj, 'click', function() {
 
-            // add spot to map
-            var spot = new google.maps.Marker({
-                position: position,
-                map: this.mapObj,
-                animation: initialLoad ? null : google.maps.Animation.DROP,
-                icon: {
-                    url: './../../assets/images/marker.png',
-                    scaledSize: new google.maps.Size(35, 35),
-                    anchor: new google.maps.Point(17, 35)
+                // ignore if modal is open
+                if (self.modalView) {
+                    return;
                 }
-            });
 
-            // set spot data
-            spot.set('data', spotData);
-
-            // add event listener for spot click
-            google.maps.event.addListener(spot, 'click', function() {
+                // close all windows
+                self.closeAllWindows();
 
                 // move to spot
-                self.mapObj.panTo(spot.data.position);
+                self.mapObj.panTo(spotObj.data.position);
 
                 if (self.mapObj.getZoom() != 18) {
                     self.mapObj.setZoom(18);
-                }
-
-                // close info window if not null
-                if (self.infoWindowView) {
-                    self.infoWindowView.closeInfoWindow();
-                    self.infoWindowView = null;
-                }
-
-                // close spot window if not null
-                if (self.spotWindowView) {
-                    self.spotWindowView.closeSpotWindow();
-                    self.spotWindowView = null;
                 }
 
                 // revert add spot mode if true
@@ -317,30 +368,26 @@ define([
                 self.infoWindowView = new homeWindowViews.InfoWindowView({
                     mapView: self,
                     mapObject: self.mapObj,
-                    spotObject: spot
+                    spotObject: spotObj
                 });
             });
+        },
 
-            // carry out operations if not initial load
-            if (!initialLoad) {
-                this.spotClusterer.addMarker(spot, true);
+        // force close all windows
+        closeAllWindows: function() {
 
-                // move to spot
-                this.mapObj.panTo(spot.data.position);
-
-                if (this.mapObj.getZoom() != 18) {
-                    this.mapObj.setZoom(18);
-                }
-                
-                // create spot window (TODO: make modal for spot editing)
-                this.spotWindowView = new homeWindowViews.SpotWindowView({
-                    mapView: self,
-                    mapObject: self.mapObj,
-                    spotObject: spot
-                });
+            // close info window if not null
+            if (this.infoWindowView) {
+                this.infoWindowView.closeInfoWindow();
             }
 
-            return spot;
+            // close spot window if not null
+            if (this.spotWindowView) {
+                this.spotWindowView.closeSpotWindow();
+            }
+
+            this.infoWindowView = null;
+            this.spotWindowView = null;
         }
     });
 

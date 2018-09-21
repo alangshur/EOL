@@ -4,6 +4,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    cursor: default;
 }
 
 /* IDS */
@@ -19,6 +20,18 @@ html, body {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+#iw-title-field {
+    word-wrap: break-word;
+    max-height: 42px;
+    overflow: scroll;
+}
+
+#iw-description-field {
+    word-wrap: break-word;
+    max-height: 80px;
+    overflow: scroll;
 }
 
 #iw-button {

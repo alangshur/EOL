@@ -2,9 +2,9 @@ define([
     'backbone',
     'jquery-wrapper',
     'underscore',
-    'spot-clusterer',
     'format',
-], function(Backbone, $, _, __spotClusterer, __format, homeModalViews) {
+    'home-modal-views'
+], function(Backbone, $, _, __format, homeModalViews) {
     var app = {};
 
     // info window wrapper view
@@ -25,21 +25,23 @@ define([
             // init info window object
             this.infoWindow = null;
 
-            this.createInfoWindow();
+            this.openInfoWindow();
         },
 
-        // create info window
-        createInfoWindow: function() {   
+        // open info window
+        openInfoWindow: function() {   
             var self = this;
 
             // fetch spot data
             $.ajax({
                 type: 'GET',
-                url: '/spot/info',
+                url: '/spot',
                 data: {
                     spotId: this.spotObj.data.spotId
                 },
                 success: function(data) {
+
+                    // grab full spot data
                     self.spotData = data;
                 },
                 dataType: 'json'
@@ -50,9 +52,10 @@ define([
                     '<div id="content">' +
                         '<h1 id="iw-header">Info</h1>' +
                         '<div id="iw-body">' +
-                            '<p><b>Description:</b> {}</p>'.format(self.spotData.description) +
+                            '<p id="iw-title-field"><b>Title: </b>{}</p>'.format(self.spotData.title) +
+                            '<p id="iw-description-field"><b>Description: </b>{}</p>'.format(self.spotData.description) +
                         '</div>' +
-                        '<button id="iw-button">View Spot</button>' +
+                        '<button id="iw-button" style="cursor:pointer">View Spot</button>' +
                     '</div>';
 
                 // buid info window
@@ -74,7 +77,8 @@ define([
                         self.mapView.spotWindowView = new app.SpotWindowView({
                             mapView: self.mapView,
                             mapObject: self.mapObj,
-                            spotObject: self.spotObj
+                            spotObject: self.spotObj,
+                            overrideOpen: false,
                         });
                     });
                 });
@@ -98,7 +102,6 @@ define([
 
         // prepare spot window data
         initialize: function(options) {
-            var self = this;
 
             // set map view on view 
             this.mapView = options.mapView;
@@ -108,6 +111,25 @@ define([
 
             // set spot object on view
             this.spotObj = options.spotObject;
+
+            // open window if no override
+            if (!options.overrideOpen) {
+                this.openSpotWindow();
+            }
+        },
+
+        // render spot window
+        render: function(spotData) {
+            var template = _.template($('#spot-window-template').html());
+
+            this.$el.html(template({
+                spot: spotData
+            }));
+        },
+
+        // open spot window
+        openSpotWindow: function() {
+            var self = this;
 
             // move to spot with window offset
             this.mapObj.panTo(this.spotObj.data.position);
@@ -127,103 +149,67 @@ define([
             // fetch spot data
             $.ajax({
                 type: 'GET',
-                url: '/spot/info',
+                url: '/spot',
                 data: {
                     spotId: this.spotObj.data.spotId
                 },
                 success: function(data) {
+                    
+                    // grab full spot data
                     self.spotData = data;
                 },
                 dataType: 'json'
             }).done(function() {
-        
-                // open window
-                self.openSpotWindow();
+
+                // render window
+                self.render(self.spotData);
+
+                // set listeners for window buttons
+                $('#edit-spot').on('click', function() {
+                    
+                    // create spot modal view
+                    self.mapView.modalView = new homeModalViews.AddSpotModalView({
+                        mapView: self.mapView,
+                        spotWindowView: self,
+                        spotData: self.spotData,
+                        isEdit: true
+                    });
+                });
+
+                $('#add-comment').on('click', function() {
+
+                    // create comment modal view
+                    self.mapView.modalView = new homeModalViews.AddCommentModalView({
+                        mapView: self.mapView,
+                        spotWindowView: self,
+                        spotData: self.spotData,
+                        isReply: false
+                    });
+                });
+
+                $('.reply-button').on('click', function() {
+
+                    // create comment modal view
+                    self.mapView.modalView = new homeModalViews.AddCommentModalView({
+                        mapView: self.mapView,
+                        spotWindowView: self,
+                        spotData: self.spotData,
+                        isReply: true,
+                        replyTargetUsername: this.getAttribute('data-comment-username'),
+                        replyTargetId: this.getAttribute('data-comment-id')
+                    });
+                });
+
+                // get profile icon width percentage
+                const profileIconWidthPercentage = 45 / window.innerWidth * 100;
+
+                // modify search bar
+                $('#search-wrapper').css('width', '30%');
+                $('#search-wrapper').css('left', '{}%'.format(70 - ((profileIconWidthPercentage + 33) / 2)));
+
+                // move spot window
+                self.$el.css('left', 0);
             });
-        },
-
-        // render spot window
-        render: function(spotInfo) {
-            var template = _.template($('#spot-window-template').html());
-
-            this.$el.html(template({
-                spot: {
-                    spotId: '123',
-                    title: 'My Home',
-                    author: 'AlexLangshur',
-                    type: 'Residence',
-                    description: 'I love my home',
-                    comments: [
-                        {
-                            commentId: '123',
-                            text: 'I agree! I really like your home, Alex!',
-                            user: 'SebastienNacher',
-                            time: 'September 11, 2018 at 5:33 PM',
-                            replies: [
-                                {
-                                    commentId: '123',
-                                    text: 'Couldn\'t have said it better myself!',
-                                    user: 'RyanKearns',
-                                    time: 'September 12, 2018 at 2:06 PM'
-                                },
-                                {
-                                    commentId: '123',
-                                    text: 'Good talk fam!',
-                                    user: 'AlexLangshur',
-                                    time: 'September 12, 2018 at 2:07 PM'
-                                }
-                            ]
-                        },
-                        {
-                            commentId: '123',
-                            text: 'Lovely home! Great place to be!',
-                            user: 'OttoMarloft',
-                            time: 'September 11, 2018 at 5:41 PM',
-                            replies: [
-                                {
-                                    commentId: '123',
-                                    text: 'Yas Queen!!',
-                                    user: 'MaxComolli',
-                                    time: 'September 14, 2018 at 2:14 PM'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }));
-        },
-
-        // open spot window
-        openSpotWindow: function() {
-            var self = this;
-
-            // render window
-            this.render(this.spotData);
-
-            // set listeners for window buttons
-            $('#edit-spot').on('click', function() {
-
-            });
-
-            $('#add-comment').on('click', function() {
-
-            });
-
-            $('.reply-button').on('click', function() {
-
-                // create comment modal view
-                self.mapView.modalView = new homeModalViews.addCommentModalView({});
-            });
-
-            // get profile icon width percentage
-            const profileIconWidthPercentage = 45 / window.innerWidth * 100;
-
-            // modify search bar
-            $('#search-wrapper').css('width', '30%');
-            $('#search-wrapper').css('left', '{}%'.format(70 - ((profileIconWidthPercentage + 33) / 2)));
-
-            // move spot window
-            this.$el.css('left', 0);
         },
 
         // close spot window

@@ -2,6 +2,7 @@
 
 html {
     font-family: Arial, Helvetica, sans-serif;
+    cursor: default;
 }
 
 #spot-window h2 {
@@ -34,7 +35,7 @@ html {
 
 .blur {
     filter: blur(4px);
-    transition: 0s;
+    transition: 500ms;
 }
 
 .top-icon {
@@ -147,6 +148,20 @@ html {
 }
 
 /* IDS */
+
+#overlay {
+    /* positioning */
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    /* styling */
+    background-color: transparent;
+    display: none;
+}
 
 #add-spot-icon {
     left: 3%;

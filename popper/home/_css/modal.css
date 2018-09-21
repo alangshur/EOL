@@ -1,1 +1,205 @@
+/* TAGS */
+
+html {
+    cursor: default;
+}
+
+/* CLASSES */
+
+.center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modal-header-text {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    font-size: 17px;
+    font-style: oblique;
+}
+
+.modal-exit-icon {
+    position: absolute;
+    width: 30px;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.post-button {
+    /* positioning */
+    position: absolute;
+    display: inline-block;
+    padding: 5px;
+    bottom: 10px;
+    right: 17px;
+
+    /* styling */
+    border: 1px solid #000000;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.spot-modal-form {
+    margin-bottom: 20px;
+}
+
+.spot-modal-form-header {
+    position: relative;
+    display: inline-block;
+    left: 17px;
+    font-weight: bold;
+    font-size: 14px;
+} 
+
 /* IDS */
+
+#comment-modal-base {
+    /* positioning */
+    position: absolute;
+    z-index: 100;
+    width: 450px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+
+    /* styling */
+    background: #ffffff;
+    border-radius: 20px;
+    border: 2px solid #000000;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#comment-modal-header {
+    order: 1;
+    height: 20%;
+    border-bottom: 1px solid #a9a9a9;
+}
+
+#comment-modal-forms {
+    order: 1;
+    height: 60%;
+}
+
+#comment-modal-footer {
+    order: 1;
+    height: 20%;
+    border-top: 1px solid #a9a9a9;
+}
+
+#comment-text {
+    /* positioning */
+    position: absolute;
+    width: 88%;
+    height: 38%;
+    padding: 10px;
+
+    /* styling */
+    font-size: 13px;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    resize: none;
+    outline: none;
+}
+
+#spot-modal-base {
+    /* positioning */
+    position: absolute;
+    z-index: 100;
+    width: 450px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+
+    /* styling */
+    background: #ffffff;
+    border-radius: 20px;
+    border: 2px solid #000000;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#spot-modal-header {
+    order: 1;
+    height: 16%;
+    border-bottom: 1px solid #a9a9a9;
+}
+
+#spot-modal-header-text {
+    top: 12px !important;
+}
+
+#spot-modal-exit-button {
+    top: 7px !important;
+}
+
+#spot-modal-forms {
+    order: 1;
+    height: 67%;
+    padding-top: 15px;
+}
+
+#spot-modal-footer {
+    order: 1;
+    height: 16%;
+    border-top: 1px solid #a9a9a9;
+}
+
+#spot-modal-done-button {
+    bottom: 8px !important;
+}
+
+#modal-title-input {
+    /* positioning */
+    position: relative;
+    height: 17px;
+    width: 197px;
+    padding: 3px;
+    padding-left: 8px;
+    float: right;
+    right: 15px;
+    bottom: 4px;
+
+    /* styling */
+    border: 1px solid #a9a9a9;
+    border-radius: 5px;
+    outline: none;
+    font-size: 11px;
+}
+
+#modal-type-input {
+    /* positioning */
+    position: relative;
+    float: right;
+    height: 25px;
+    width: 210px;
+    right: 15px;
+    bottom: 3px;
+
+    /* styling */
+    border: 1px solid #a9a9a9;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    background-color: #ffffff;
+}
+
+#modal-description-input {
+    /* positioning */
+    position: relative;
+    width: 400px;
+    height: 60px;
+    padding: 7px;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%, 0);
+
+    /* styling */
+    border: 1px solid #a9a9a9;
+    border-radius: 5px;
+    font-size: 12px;
+    outline: none;
+    resize: none;
+}

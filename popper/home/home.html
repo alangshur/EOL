@@ -9,9 +9,12 @@
         <!-- stylesheets -->
         <link href="./_css/home.css" rel="stylesheet" type="text/css"> 
         <link href="./_css/map.css" rel="stylesheet" type="text/css"> 
+        <link href="./_css/modal.css" rel="stylesheet" type="text/css"> 
     </head>
     <body>
-        <div id='modal-anchor'></div>
+        <div id='overlay'>
+            <div id='modal-anchor'></div>
+        </div>
 
         <div id='map'></div>
 
@@ -87,7 +90,7 @@
                     <div class='comment-dash-1'>|</div>
                     <div class='comment-time'><%= spot.comments[i].time %></div>
                     <div class='comment-dash-2'>|</div>
-                    <div class='reply-button' 
+                    <div class='reply-button'
                         data-comment-username='<%= spot.comments[i].user %>' 
                         data-comment-id='<%= spot.comments[i].commentId %>'>Reply
                     </div>
@@ -116,8 +119,53 @@
     </div>
 </script>
 
-<script id='profile-window-template' type='text/template'>
+<script id='profile-window-template' type='text/template'></script>
 
-<script id='add-comment-modal-template' type='text/template'></script>
+<script id='add-comment-modal-template' type='text/template'>
+    <div id='comment-modal-base' class='center'>
+        <div id='comment-modal-header'>
+            <div class='modal-header-text'></div>
+            <img class='modal-exit-icon' src='./../assets/images/cross-icon.png' alt='Exit Icon'>
+        </div>
+        <div id='comment-modal-forms'>
+            <textarea id='comment-text' class='center' placeholder='Share your thoughts!'></textarea>
+        </div>
+        <div id='comment-modal-footer'>
+            <div class='post-button'>Post</div>
+        </div>
+    </div>
+</script>
 
-<script id='add-spot-modal-template' type='text/template'></script>
+<script id='add-spot-modal-template' type='text/template'>
+    <div id='spot-modal-base' class='center'>
+        <div id='spot-modal-header'>
+            <div id='spot-modal-header-text' class='modal-header-text'></div>
+            <img id='spot-modal-exit-button' class='modal-exit-icon' src='./../assets/images/cross-icon.png' alt='Exit Icon'>
+        </div>
+        <div id='spot-modal-forms'>
+            <div class='spot-modal-form'>
+                <div class='spot-modal-form-header'>Title</div>
+                <input id='modal-title-input' placeholder='Add a title...'>
+            </div>
+            <div class='spot-modal-form'>
+                <div class='spot-modal-form-header'>Type</div>
+                <select id='modal-type-input' name=''>
+                    <option value='' disabled selected>Select a type...</option>
+                    <option value='Food/Restaurant'>Food/Restaurant</option>
+                    <option value='Shop'>Shop</option>
+                    <option value='Residence'>Residence</option>
+                    <option value='Park'>Park</option>
+                    <option value='Landmark'>Landmark</option>
+                    <option value='Other'>Other</option>
+                </select>
+            </div>
+            <div class='spot-modal-form'>
+                <div class='spot-modal-form-header'>Description</div><br>
+                <textarea id='modal-description-input' placeholder='Add a description...'></textarea>
+            </div>
+        </div>
+        <div id='spot-modal-footer'>
+            <div id='spot-modal-done-button' class='post-button'>Done</div>
+        </div>
+    </div>
+</script>
