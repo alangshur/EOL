@@ -43,6 +43,16 @@ module.exports = function(app, kwargs) {
         }
     });
 
+    // GET for user: #/user
+    app.get('/user', (req, res) => {
+
+        // get user id from session
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({
+            userId: req.user._id
+        }));
+    });
+
     // GET for spot: #/spot
     app.get('/spot', (req, res) => {
         console.log('GET Request @ /spot');

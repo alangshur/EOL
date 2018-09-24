@@ -214,10 +214,20 @@ function initMap() {
         'home-views'
     ], function(homeViews) {
         var app = {};
-
-        // init map view
-        app.homeView = new homeViews.HomeView({
-            mapObject: map
+        
+        // get user id
+        $.ajax({
+            type: 'GET',
+            url: '/user',
+            success: function(data) {
+                
+                // init map view
+                app.homeView = new homeViews.HomeView({
+                    userId: data.userId,
+                    mapObject: map
+                });
+            },
+            dataType: 'json'
         });
 
         return app;

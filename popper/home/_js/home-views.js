@@ -16,11 +16,15 @@ define([
         initialize: function(options) {
             var self = this;
 
+            // set user id on view
+            this.userId = options.userId;
+
             // set map object on view
             this.mapObj = options.mapObject;
 
             // init map view
             this.mapView = new app.MapView({
+                homeView: this,
                 mapObject: this.mapObj
             });
 
@@ -164,6 +168,9 @@ define([
         // prepare map data
         initialize: function(options) {
             var self = this;
+
+            // set home view on view
+            this.homeView = options.homeView;
 
             // set map object on view
             this.mapObj = options.mapObject;

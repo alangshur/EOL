@@ -164,18 +164,28 @@ define([
                 // render window
                 self.render(self.spotData);
 
-                // set listeners for window buttons
-                $('#edit-spot').on('click', function() {
-                    
-                    // create spot modal view
-                    self.mapView.modalView = new homeModalViews.AddSpotModalView({
-                        mapView: self.mapView,
-                        spotWindowView: self,
-                        spotData: self.spotData,
-                        isEdit: true
-                    });
-                });
+                // check if user id matches spot
+                if (self.mapView.homeView.userId == self.spotData.authorId) {
 
+                    // set listener for edit button
+                    $('#edit-spot').on('click', function() {
+                        
+                        // create spot modal view
+                        self.mapView.modalView = new homeModalViews.AddSpotModalView({
+                            mapView: self.mapView,
+                            spotWindowView: self,
+                            spotData: self.spotData,
+                            isEdit: true
+                        });
+                    });
+                }
+                else {
+
+                    // hide edit button
+                    $('#edit-spot').hide();
+                }
+
+                // set listener for add comment button
                 $('#add-comment').on('click', function() {
 
                     // create comment modal view
@@ -187,6 +197,7 @@ define([
                     });
                 });
 
+                // set listener for reply comment button
                 $('.reply-button').on('click', function() {
 
                     // create comment modal view
