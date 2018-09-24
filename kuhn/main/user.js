@@ -28,7 +28,10 @@ module.exports = function(app, kwargs) {
         // persist sessions past cookies and memory cache
         store: new MongoStore({ url: kwargs['mongoUtil'].formatURI(kwargs['databaseName']) }),
         resave: false,
-        saveUninitialized: true
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 30 * 24 * 60 * 60 * 1000
+        }
     }));
 
     // configure app-passport middleware

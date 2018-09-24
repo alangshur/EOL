@@ -100,26 +100,32 @@ module.exports = function(app, kwargs) {
                 return;
             }
 
-            // replace db spot data with modified data
-            try {
-                kwargs['mongoUtil'].Spot().updateOne({
-                    spotId: req.body.spotData.spotId
-                }, modifiedData, function(err) {
-                    if (err) throw err;
+            console.log(req.user);
 
-                    // print success message
-                    console.log('Successfully edited spot {}'.format(req.body.spotData.spotId));
+            // enforce user editing
+            if (req.body.spotData.authorId == req.user._id) {
 
-                    // send JSON response
-                    res.setHeader('Content-Type', 'application/json');
-                    res.send(JSON.stringify({
+                // replace db spot data with modified data
+                try {
+                    kwargs['mongoUtil'].Spot().updateOne({
                         spotId: req.body.spotData.spotId
-                    }));
-                });
-            }
-            catch (err) {
-                console.log('Error editing spot {}: {}'.format(req.body.spotData.spotId, err));
-                res.end();
+                    }, modifiedData, function(err) {
+                        if (err) throw err;
+    
+                        // print success message
+                        console.log('Successfully edited spot {}'.format(req.body.spotData.spotId));
+    
+                        // send JSON response
+                        res.setHeader('Content-Type', 'application/json');
+                        res.send(JSON.stringify({
+                            spotId: req.body.spotData.spotId
+                        }));
+                    });
+                }
+                catch (err) {
+                    console.log('Error editing spot {}: {}'.format(req.body.spotData.spotId, err));
+                    res.end();
+                }
             }
         }
         else {
