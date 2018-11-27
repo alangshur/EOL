@@ -1,1 +1,3 @@
-# Config Structure:
+# Config Content:
+
+Not for your eyes...
