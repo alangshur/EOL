@@ -2,16 +2,8 @@
 
 ### Implementation & Technologies
 
-Web Frameworks:
-- Backbone.js
-- jQuery
-- Express.js
-- Node.js
+Lots of stuff... (see package.json or Popper libraries)
 
-### Long-term Goals & Takeaways
+### Long-term Goals
 
-### Team
-
-Developers:
-- Alex Langshur
-- Ryan Kearns
+To change the game (enough said)
