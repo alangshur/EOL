@@ -1,3 +1,3 @@
 # Config Content:
 
-Not for your eyes...
+Not for your eyes... Sorry.
