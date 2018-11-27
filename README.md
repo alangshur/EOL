@@ -2,8 +2,8 @@
 
 ### Implementation & Technologies
 
-Lots of stuff... (see package.json or Popper libraries)
+Lots of stuff (see package.json or Popper libraries)
 
 ### Long-term Goals
 
-To change the game (enough said)
+To change the game -- enough said...
